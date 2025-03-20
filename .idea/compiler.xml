@@ -3,16 +3,17 @@
   <component name="CompilerConfiguration">
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
-      <profile name="Annotation profile for staff-mngt" enabled="true">
+      <profile name="Annotation profile for scheduler-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
         </processorPath>
-        <module name="multi-tenancy-service" />
+        <module name="scheduler-service" />
         <module name="staff-mngt" />
         <module name="patient-service" />
+        <module name="multi-tenancy-service" />
       </profile>
     </annotationProcessing>
   </component>
@@ -20,6 +21,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="multi-tenancy-service" options="-parameters" />
       <module name="patient-service" options="-parameters" />
+      <module name="scheduler-service" options="-parameters" />
       <module name="staff-mngt" options="-parameters" />
     </option>
   </component>
