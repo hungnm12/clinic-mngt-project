@@ -26,8 +26,6 @@ public class EmergencyContactEntity {
     @Column(name = "phone", nullable = false)
     private String phone;
 
-    @OneToOne
-    @JoinColumn(name = "patient_id", nullable = false)
-    private PatientEntity patient;
+
 }
 

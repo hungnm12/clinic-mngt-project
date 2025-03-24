@@ -46,4 +46,7 @@ public class PatientEntity {
 
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
     private MedicalRecordEntity medicalRecord;
+
+    @Column(name = "patient_code")
+    private String patientCode;
 }

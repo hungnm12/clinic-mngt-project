@@ -17,4 +17,7 @@ public class MailReqDto {
 
     @JsonProperty("message-content")
     private PatientReqDto messageContent;
+
+
+
 }
