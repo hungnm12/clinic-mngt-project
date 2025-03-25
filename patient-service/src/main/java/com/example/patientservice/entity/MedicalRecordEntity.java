@@ -33,7 +33,7 @@ public class MedicalRecordEntity {
     @Column(name = "vaccination_records", columnDefinition = "TEXT")
     private String vaccinationRecords;
 
-    @OneToOne
-    @JoinColumn(name = "patient_id", nullable = false)
-    private PatientEntity patient;
+
+
+
 }

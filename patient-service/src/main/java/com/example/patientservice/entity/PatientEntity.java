@@ -40,12 +40,7 @@ public class PatientEntity {
 
     @Column(name = "address", columnDefinition = "TEXT")
     private String address;
-
-    @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
-    private EmergencyContactEntity emergencyContact;
-
-    @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
-    private MedicalRecordEntity medicalRecord;
+    
 
     @Column(name = "patient_code")
     private String patientCode;

@@ -28,11 +28,6 @@ public class PatientServiceImpl implements PatientService {
         if (patientRepository.findByPatientCode(patientCode) != null) {
             return new GeneralResponse(HttpsURLConnection.HTTP_CONFLICT, "", "Patient already exists", null);
         }
-        EmergencyContactEntity emergencyContact = EmergencyContactEntity
-                .builder()
-                .relationship(patient.getEmergencyContact().getRelationship())
-                .phone(patient.getEmergencyContact().getPhone())
-                .build();
 
 
 
@@ -45,7 +40,6 @@ public class PatientServiceImpl implements PatientService {
                 .phone(patient.getPhone())
                 .email(patient.getEmail())
                 .dateOfBirth(patient.getDateOfBirth())
-                .emergencyContact(emergencyContact)
                 .build();
         patientRepository.save(patientEntity);
 
