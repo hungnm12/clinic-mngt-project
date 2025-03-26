@@ -18,4 +18,18 @@ public class AddTenantReq {
     private String username;
     @JsonProperty("password")
     private String password;
+    @JsonProperty("clinicNname")
+    private String clinicName;
+    @JsonProperty("address")
+    private String address;
+    @JsonProperty("inchargedDr")
+    private String inchargedDr;
+    @JsonProperty("drPhone")
+    private String drPhone;
+    @JsonProperty("clinicCode")
+    private String clinicCode;
+    @JsonProperty("clinicEmail")
+    private String clinicEmail;
+    @JsonProperty("website")
+    private String website;
 }

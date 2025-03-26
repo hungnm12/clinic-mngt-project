@@ -27,4 +27,18 @@ public class MultiTenantsEntity {
     private String username;
     @Column(name = "password")
     private String password;
+    @Column(name = "clinic-name")
+    private String clinicName;
+    @Column(name = "address")
+    private String address;
+    @Column(name = "inchargedDr")
+    private String inchargedDr;
+    @Column(name = "dr-phone")
+    private String drPhone;
+    @Column(name = "clinic-code")
+    private String clinicCode;
+    @Column(name = "clinic-email")
+    private String clinicEmail;
+    @Column(name = "website")
+    private String website;
 }

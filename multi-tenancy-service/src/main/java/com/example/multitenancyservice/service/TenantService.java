@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 
 @Service
 @Slf4j
@@ -32,12 +33,20 @@ public class TenantService {
     }
 
     public MultiTenantsEntity saveTenant(AddTenantReq tenantReq) {
+        String clinicCode = "Clinic_" + tenantReq.getClinicName() + new Random().nextInt(100);
         MultiTenantsEntity tenant = MultiTenantsEntity
                 .builder()
                 .tenantId(tenantReq.getTenantId())
                 .dbUrl(tenantReq.getDbUrl())
                 .username(tenantReq.getUsername())
                 .password(tenantReq.getPassword())
+                .clinicCode(clinicCode)
+                .address(tenantReq.getAddress())
+                .drPhone(tenantReq.getDrPhone())
+                .website(tenantReq.getWebsite())
+                .drPhone(tenantReq.getDrPhone())
+                .clinicEmail(tenantReq.getClinicEmail())
+                .inchargedDr(tenantReq.getInchargedDr())
                 .build();
         SqlCredentialReq sqlCredentialReq = new SqlCredentialReq();
         sqlCredentialReq.setUsername(tenantReq.getUsername());
@@ -48,6 +57,7 @@ public class TenantService {
             log.error("SQL Credential validation failed");
             return null;
         }
+
 
         return tenantRepository.save(tenant);
     }
