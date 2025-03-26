@@ -29,4 +29,7 @@ public class StaffResDto {
 
     @JsonProperty("staff_code")
     private String staffCode;
+
+    @JsonProperty("status")
+    private String status;
 }

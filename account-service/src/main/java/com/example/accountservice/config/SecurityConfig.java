@@ -1,10 +1,14 @@
 package com.example.accountservice.config;
 
+import com.example.accountservice.constant.RoleEnum;
 import com.example.accountservice.filter.JwtAuthFilter;
+import com.example.accountservice.service.UserInfoService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,6 +23,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
+
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserInfoService();
@@ -26,18 +32,20 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
-        HttpSecurity httpSecurity = http
+        return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken").permitAll()
-                        .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")
-                        .requestMatchers("/auth/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/auth/user/**").hasAuthority(String.valueOf(RoleEnum.USER_STAFF))
+                        .requestMatchers("/auth/user/**").hasAuthority(String.valueOf(RoleEnum.USER_ADMIN))
+                        .requestMatchers("/auth/user/**").hasAuthority(String.valueOf(RoleEnum.USER_PATIETNT))
+                        .requestMatchers("/auth/admin/**").hasAuthority(String.valueOf(RoleEnum.ADMIN))
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).build();
 
-        return http.build();
+
     }
 
     @Bean

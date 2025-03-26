@@ -32,8 +32,9 @@ public class UserInfoDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return "";
+        return password;
     }
+
 
     @Override
     public String getUsername() {
