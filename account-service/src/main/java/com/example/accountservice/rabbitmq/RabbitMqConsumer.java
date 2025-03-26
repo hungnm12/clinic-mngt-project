@@ -1,6 +1,7 @@
 package com.example.accountservice.rabbitmq;
 
 import com.example.accountservice.constant.RoleEnum;
+import com.example.accountservice.constant.StatusConstant;
 import com.example.accountservice.entity.UserInfo;
 import com.example.accountservice.service.UserInfoService;
 import com.example.accountservice.utils.ConvertUtils;
@@ -36,32 +37,55 @@ public class RabbitMqConsumer {
 
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(message);
+        JsonNode dataNode = jsonNode.path("data");
+        String topic = jsonNode.path("topic").asText(null);
 
-        String topic = jsonNode.path("topic").asText(null); // Use path() to avoid NullPointerException
+        switch (dataNode.path("status").asText()) {
+            case StatusConstant.PENDING: {
+                if ("add_acc".equals(topic)) {
+                    String type = dataNode.path("type").asText();
 
-        if ("add_acc".equals(topic)) {
-            JsonNode dataNode = jsonNode.path("data");
+                    if ("Staff".equals(type) || "Patient".equals(type)) {
+                        if (!dataNode.isMissingNode() && dataNode.isObject()) { // Ensure 'data' exists and is an object
+                            String email = dataNode.path("username").asText(null);
+                            String password = dataNode.path("password").asText(null);
+                            String tenantId = dataNode.path("tenant-id").asText(null);
+                            if (email != null && password != null) {
+                                UserInfo userInfo = new UserInfo();
+                                userInfo.setEmail(email);
+                                userInfo.setPassword(new String(Base64.getDecoder().decode(password), StandardCharsets.UTF_8));
+                                userInfo.setTenantId(tenantId);
+                                userInfo.setType(type);
+                                log.info("Decoded password: {}", userInfo.getPassword());
 
-            if (!dataNode.isMissingNode() && dataNode.isObject()) { // Ensure 'data' exists and is an object
-                String email = dataNode.path("username").asText(null);
-                String password = dataNode.path("password").asText(null);
+                                // Set role based on type
+                                if ("Staff".equals(type)) {
+                                    userInfo.setRoles(RoleEnum.USER_STAFF.toString());
+                                } else {
+                                    userInfo.setRoles(RoleEnum.USER_PATIETNT.toString());
+                                }
 
-                if (email != null && password != null) {
-                    UserInfo userInfo = new UserInfo();
-                    userInfo.setEmail(email);
-                    userInfo.setPassword(new String(Base64.getDecoder().decode(password), StandardCharsets.UTF_8));
-                    log.info("Decoded password: {}", userInfo.getPassword());
-                    userInfo.setRoles(RoleEnum.USER_STAFF.toString());
-                    service.addUser(userInfo);
+                                service.addUser(userInfo);
+                            } else {
+                                log.warn("Missing required fields in message: {}", message);
+                            }
+                        } else {
+                            log.warn("Invalid 'data' format in message: {}", message);
+                        }
+                    } else {
+                        log.info("Skipping message with unsupported type: {}", type);
+                    }
                 } else {
-                    log.warn("Missing required fields in message: {}", message);
+                    log.info("Skipping message with topic: {}", topic);
                 }
-            } else {
-                log.warn("Invalid 'data' format in message: {}", message);
+                break; // Add break to avoid fall-through
             }
-        } else {
-            log.info("Skipping message with topic: {}", topic);
+
+            default:
+                log.info("Skipping message with status: {}", dataNode.path("status").asText());
         }
+
+
     }
 
 

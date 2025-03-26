@@ -23,4 +23,10 @@ public class UserInfo {
     private String password;
     @Column(name = "roles")
     private String roles;
+    @Column(name = "type")
+    private String type;
+    @Column(name = "status")
+    private String status;
+    @Column(name = "tenant-id")
+    private String tenantId;
 }

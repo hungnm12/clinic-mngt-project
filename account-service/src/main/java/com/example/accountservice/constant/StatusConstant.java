@@ -1,6 +1,6 @@
-package com.example.staffmngt.constant;
+package com.example.accountservice.constant;
 
-public class StaffConstant {
+public class StatusConstant {
     public static final String PENDING = "pending";
     public static final String ACTIVE = "active";
     public static final String INACTIVE = "inactive";

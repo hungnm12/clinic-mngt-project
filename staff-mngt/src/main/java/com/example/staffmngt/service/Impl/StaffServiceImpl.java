@@ -218,7 +218,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
 
-    private void processResponseStaffFromQueue(RabbitMsgReq rabbitMsgReq) {
+    public void processResponseStaffFromQueue(RabbitMsgReq rabbitMsgReq) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
