@@ -1,7 +1,10 @@
 package com.example.staffmngt.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
@@ -9,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "staff")
-public class StaffEntity {
+public class StaffHistoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +40,7 @@ public class StaffEntity {
 
     @Column(name = "password")
     private String password;
+
     @Column(name = "status")
     private String status;
 

@@ -25,4 +25,5 @@ public class StaffReqDto {
 
     @JsonProperty("department")
     private String department;
+
 }

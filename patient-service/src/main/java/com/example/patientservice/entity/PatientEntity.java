@@ -40,7 +40,7 @@ public class PatientEntity {
 
     @Column(name = "address", columnDefinition = "TEXT")
     private String address;
-
+    
 
     @Column(name = "patient_code")
     private String patientCode;

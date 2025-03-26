@@ -29,11 +29,5 @@ public class AppointmentEntity {
     @Column(name = "status")
     private String status; // Scheduled, Completed, Canceled
 
-    @ManyToOne
-    @JoinColumn(name = "patient_id", nullable = false)
-    private PatientEntity patient;
 
-    @ManyToOne
-    @JoinColumn(name = "doctor_id", nullable = false)
-    private DoctorEntity doctor;
 }
