@@ -45,7 +45,7 @@ public class PatientServiceImpl implements PatientService {
                 .phone(patient.getPhone())
                 .email(patient.getEmail())
                 .dateOfBirth(patient.getDateOfBirth())
-                .emergencyContact(emergencyContact)
+
                 .build();
         patientRepository.save(patientEntity);
 
