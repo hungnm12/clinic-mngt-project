@@ -1,6 +1,7 @@
 package com.example.multitenancyservice.controller;
 
 import com.example.multitenancyservice.dto.req.AddTenantReq;
+import com.example.multitenancyservice.dto.res.TenantRes;
 import com.example.multitenancyservice.entity.MultiTenantsEntity;
 import com.example.multitenancyservice.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,13 @@ public class TenantController {
     private TenantService tenantService;
 
     @GetMapping
-    public ResponseEntity<List<MultiTenantsEntity>> getAllTenants() {
+    public ResponseEntity<List<TenantRes>> getAllTenants() {
         return ResponseEntity.ok(tenantService.getAllTenants());
     }
 
-    @GetMapping("/{tenantId}")
-    public ResponseEntity<MultiTenantsEntity> getTenant(@PathVariable String tenantId) {
-        return ResponseEntity.ok(tenantService.getTenantById(tenantId));
+    @GetMapping("/{clinicId}")
+    public ResponseEntity<MultiTenantsEntity> getTenant(@PathVariable String clinicId) {
+        return ResponseEntity.ok(tenantService.getTenantById(clinicId));
     }
 
     @PostMapping
@@ -30,9 +31,13 @@ public class TenantController {
         return ResponseEntity.ok(tenantService.saveTenant(tenant));
     }
 
-    @DeleteMapping("/{tenantId}")
-    public ResponseEntity<Void> deleteTenant(@PathVariable String tenantId) {
-        tenantService.deleteTenant(tenantId);
+    @DeleteMapping("/{clinicId}")
+    public ResponseEntity<Void> deleteTenant(@PathVariable String clinicId) {
+        tenantService.deleteTenant(clinicId);
         return ResponseEntity.noContent().build();
+    }
+    @PutMapping()
+    public ResponseEntity<MultiTenantsEntity> editTenant(@RequestBody AddTenantReq tenant) {
+        return ResponseEntity.ok(tenantService.editTenat(tenant));
     }
 }

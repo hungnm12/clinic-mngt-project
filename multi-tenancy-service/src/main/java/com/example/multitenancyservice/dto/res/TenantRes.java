@@ -1,13 +1,16 @@
-package com.example.multitenancyservice.dto.req;
+package com.example.multitenancyservice.dto.res;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Column;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Data
-public class AddTenantReq {
+@AllArgsConstructor
+@NoArgsConstructor
+public class TenantRes {
     @JsonProperty("tenantId")
     private String tenantId;
     @JsonProperty("schemaName")

@@ -31,14 +31,14 @@ public class MultiTenantsEntity {
     private String clinicName;
     @Column(name = "address")
     private String address;
-    @Column(name = "inchargedDr")
-    private String inchargedDr;
-    @Column(name = "dr-phone")
-    private String drPhone;
+    @Column(name = "representativeName")
+    private String representativeName;
+    @Column(name = "phone")
+    private String phone;
     @Column(name = "clinic-code")
     private String clinicCode;
-    @Column(name = "clinic-email")
-    private String clinicEmail;
+    @Column(name = "email")
+    private String email;
     @Column(name = "website")
     private String website;
 }
