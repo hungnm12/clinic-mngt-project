@@ -3,6 +3,9 @@ package com.example.staffmngt.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @Builder
@@ -39,8 +42,10 @@ public class StaffEntity {
     @Column(name = "password")
     private String password;
 
-
     @Column(name = "status")
     private String status;
+
+    @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ShiftScheduleEntity> lstShift = new ArrayList<>();
 
 }

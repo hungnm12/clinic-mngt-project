@@ -1,5 +1,6 @@
 package com.example.schedulerservice.service.Impl;
 
+import com.example.schedulerservice.service.MailService;
 import com.example.schedulerservice.service.ThymeLeafService;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -11,7 +12,8 @@ public class ThymeLeafServiceImpl implements ThymeLeafService {
 
     private final TemplateEngine templateEngine;
 
-    public ThymeLeafServiceImpl(TemplateEngine templateEngine) {
+    public ThymeLeafServiceImpl(MailService mailService, TemplateEngine templateEngine) {
+
         this.templateEngine = templateEngine;
     }
 
@@ -21,4 +23,9 @@ public class ThymeLeafServiceImpl implements ThymeLeafService {
         context.setVariables(map);
         return templateEngine.process("cf-mail", context);
     }
+
+
+
+
+
 }

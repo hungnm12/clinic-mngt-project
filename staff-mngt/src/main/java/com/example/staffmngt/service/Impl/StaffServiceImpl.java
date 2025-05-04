@@ -3,10 +3,7 @@ package com.example.staffmngt.service.Impl;
 import com.example.staffmngt.configuration.TenantContext;
 import com.example.staffmngt.constant.StaffConstant;
 import com.example.staffmngt.dto.req.*;
-import com.example.staffmngt.dto.res.GeneralResponse;
-import com.example.staffmngt.dto.res.StaffResDto;
-import com.example.staffmngt.dto.res.KafkaMsgRes;
-import com.example.staffmngt.dto.res.UserInfo;
+import com.example.staffmngt.dto.res.*;
 import com.example.staffmngt.entity.DepartmentEntity;
 import com.example.staffmngt.entity.StaffEntity;
 import com.example.staffmngt.entity.StaffHistoryEntity;
@@ -18,10 +15,15 @@ import com.example.staffmngt.repository.StaffEntityRepository;
 import com.example.staffmngt.repository.StaffHistoryRepository;
 import com.example.staffmngt.service.StaffService;
 import com.example.staffmngt.utils.ConvertUtils;
+import com.example.staffmngt.utils.StringUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -139,19 +141,17 @@ public class StaffServiceImpl implements StaffService {
         if (department == null) {
             return new GeneralResponse(HttpStatus.NO_CONTENT.value(), "", "Department is not found", null);
         }
-        StaffEntity updStff = StaffEntity.builder()
-                .email(staff.getEmail())
-                .lastName(staff.getLastName())
-                .firstName(staff.getFirstName())
-                .staffCode(st.getStaffCode())
-                .age(staff.getAge())
-                .department(department)
-                .role(st.getRole())
-                .build();
+        st.setLastName(staff.getLastName());
+        st.setFirstName(staff.getFirstName());
+        st.setEmail(staff.getEmail());
+        st.setPassword(staff.getPassword());
+        st.setRole(staff.getRole());
+        st.setStaffCode(staff.getStaffCode());
+        st.setDepartment(department);
+        staffEntityRepository.save(st);
 
-        Map<Object, Object> map = new HashMap<>();
-        map.put(updStff, StaffResDto.class);
-        return new GeneralResponse(HttpStatus.OK.value(), "", "Staff updated", updStff);
+
+        return new GeneralResponse(HttpStatus.OK.value(), "", "Staff updated", st);
     }
 
     @Override
@@ -193,6 +193,35 @@ public class StaffServiceImpl implements StaffService {
                 updReqDto.getRole(), updReqDto.getDepartment());
 
         return new GeneralResponse(HttpStatus.OK.value(), "", "Staff searched", lstStff);
+    }
+
+    @Override
+    public GeneralResponse getListStaff(ListStaffSearchReq staffSearchReq) {
+        Sort sort;
+        if (!StringUtil.isNullOrEmpty(staffSearchReq.getSortBy())) {
+            if (!StringUtil.isNullOrEmpty(staffSearchReq.getSortType()) && staffSearchReq.getSortType().equalsIgnoreCase("asc")) {
+                sort = Sort.by(Sort.Direction.ASC, staffSearchReq.getSortBy());
+            } else {
+                sort = Sort.by(Sort.Direction.DESC, staffSearchReq.getSortBy());
+            }
+        } else {
+            sort = Sort.by(Sort.Direction.DESC, "createdDate");
+        }
+
+        int page = 0;
+        if (staffSearchReq.getPage() != null) {
+            page = Math.max(0, staffSearchReq.getPage() - 1);
+        }
+
+        int size = 10;
+        if (staffSearchReq.getSize() != null) {
+            size = staffSearchReq.getSize() < 0 ? 5 : staffSearchReq.getSize();
+        }
+
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<StaffResDto> StaffResDtoPage = staffEntityRepository.getListOfStaff(staffSearchReq.getLastName(), staffSearchReq.getFirstName(), staffSearchReq.getEmail(), staffSearchReq.getEmail(), staffSearchReq.getStaffCode(), staffSearchReq.getRole(), pageable);
+        return new GeneralResponse(org.apache.http.HttpStatus.SC_OK, "", "service list", new ListContentPageDto<>(StaffResDtoPage, StaffResDtoPage.getContent()));
     }
 
     private boolean isValidEmail(String email) {

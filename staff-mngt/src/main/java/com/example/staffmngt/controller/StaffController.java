@@ -1,6 +1,7 @@
 package com.example.staffmngt.controller;
 
 import com.example.staffmngt.configuration.TenantContext;
+import com.example.staffmngt.dto.req.ListStaffSearchReq;
 import com.example.staffmngt.dto.req.SignUpReqDto;
 import com.example.staffmngt.dto.req.StaffReqDto;
 import com.example.staffmngt.dto.req.UpdReqDto;
@@ -44,5 +45,13 @@ public class StaffController {
     @PostMapping("/search")
     GeneralResponse searchStaff(@RequestBody UpdReqDto updReqDto) {
         return staffService.searchStaff(updReqDto);
+    }
+
+    @PostMapping("/list")
+    GeneralResponse listStaff(@RequestBody ListStaffSearchReq staffReqDto, @RequestHeader("X-Tenant-ID") String tenantId) {
+        System.out.println("Received tenant ID: " + tenantId);
+        TenantContext.setTenant(tenantId);
+        return staffService.getListStaff(staffReqDto);
+
     }
 }

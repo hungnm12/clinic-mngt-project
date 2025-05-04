@@ -1,5 +1,6 @@
 package com.example.staffmngt.service;
 
+import com.example.staffmngt.dto.req.ListStaffSearchReq;
 import com.example.staffmngt.dto.req.SignUpReqDto;
 import com.example.staffmngt.dto.req.StaffReqDto;
 import com.example.staffmngt.dto.req.UpdReqDto;
@@ -23,6 +24,8 @@ public interface StaffService {
 //    StaffEntity signUp(SignUpReqDto signUp);
 
     GeneralResponse searchStaff(UpdReqDto updReqDto);
+
+    GeneralResponse getListStaff(ListStaffSearchReq staffSearchReq);
 
 
 }

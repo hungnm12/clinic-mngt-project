@@ -1,6 +1,10 @@
 package com.example.staffmngt.repository;
 
+import com.example.staffmngt.dto.res.ServiceResDto;
+import com.example.staffmngt.dto.res.StaffResDto;
 import com.example.staffmngt.entity.StaffEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,7 +21,6 @@ public interface StaffEntityRepository extends JpaRepository<StaffEntity, Long> 
     StaffEntity findByEmail(String email);
 
 
-
     @Query("select s from StaffEntity s where (:department is null or s.department = :department) " +
 
             "and (:firstName is null or s.firstName = :firstName) " +
@@ -31,5 +34,26 @@ public interface StaffEntityRepository extends JpaRepository<StaffEntity, Long> 
                                   @Param("lastName") String lastName,
                                   @Param("role") String role,
                                   @Param("department") String department);
+
+
+    @Query("select new com.example.staffmngt.dto.res.StaffResDto(" +
+            "s.lastName, s.firstName, s.age, s.role, s.email, s.department, " +
+            "s.staffCode, s.password, s.status, s.lstShift) " +
+            "from StaffEntity s " +
+            "where (:staffCode is null or :staffCode = '' or s.staffCode like %:staffCode%)" +
+            "and (:department is null or :department = '' or s.department.name like %:department%)" +
+            "and (:lastName is null or :lastName = '' or s.lastName like %:lastName%)" +
+            "and (:firstName is null or :firstName = '' or s.firstName like %:firstName%)" +
+            "and (:email is null or :email = '' or s.email like %:email%)" +
+            "and (:role is null or :role = '' or s.role like %:role%)")
+    Page<StaffResDto> getListOfStaff(
+            @Param("last_name") String lastName,
+            @Param("first_name") String firstName,
+            @Param("email") String email,
+            @Param("department") String department,
+            @Param("staffCode") String staffCode,
+            @Param("role") String role,
+            Pageable pageable);
+
 
 }
