@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "shift_schedules")
 @Data
@@ -28,4 +30,10 @@ public class ShiftScheduleEntity {
 
     @Column(name = "day_of_week", nullable = false)
     private String dayOfWeek; // Monday, Tuesday, etc.
+
+    @Column(name = "booked_time")
+    private Date bookedTime;
+
+
+
 }

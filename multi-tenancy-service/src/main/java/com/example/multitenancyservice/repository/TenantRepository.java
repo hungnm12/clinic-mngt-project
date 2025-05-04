@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TenantRepository extends JpaRepository<MultiTenantsEntity, Long> {
-    Optional<MultiTenantsEntity> findByTenantId(String tenantId);
+    MultiTenantsEntity findByTenantId(String tenantId);
     MultiTenantsEntity findByClinicCode(String clinicId);
 }

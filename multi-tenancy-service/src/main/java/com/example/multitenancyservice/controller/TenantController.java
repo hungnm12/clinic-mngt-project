@@ -21,9 +21,9 @@ public class TenantController {
         return ResponseEntity.ok(tenantService.getAllTenants());
     }
 
-    @GetMapping("/{clinicId}")
-    public ResponseEntity<MultiTenantsEntity> getTenant(@PathVariable String clinicId) {
-        return ResponseEntity.ok(tenantService.getTenantById(clinicId));
+    @GetMapping("/{tenantId}")
+    public ResponseEntity<MultiTenantsEntity> getTenant(@PathVariable String tenantId) {
+        return ResponseEntity.ok(tenantService.getTenantById(tenantId));
     }
 
     @PostMapping

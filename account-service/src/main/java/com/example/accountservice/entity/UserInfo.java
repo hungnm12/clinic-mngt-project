@@ -29,4 +29,6 @@ public class UserInfo {
     private String status;
     @Column(name = "tenant-id")
     private String tenantId;
+    @Column(name = "staff_code")
+    private String staffCode;
 }

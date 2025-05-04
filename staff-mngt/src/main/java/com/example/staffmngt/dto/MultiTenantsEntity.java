@@ -1,20 +1,35 @@
 package com.example.staffmngt.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Column;
 import lombok.Data;
 
 @Data
 public class MultiTenantsEntity {
     @JsonProperty("id")
     private Long id;
-    @JsonProperty("tenantId")
+    @Column(name = "tenantId")
     private String tenantId;
-    @JsonProperty("schemaName")
+    @Column(name = "schema_name")
     private String schemaName;
-    @JsonProperty("dbUrl")
+    @Column(name = "db_url")
     private String dbUrl;
-    @JsonProperty("username")
+    @Column(name = "username")
     private String username;
-    @JsonProperty("password")
+    @Column(name = "password")
     private String password;
+    @Column(name = "clinic-name")
+    private String clinicName;
+    @Column(name = "address")
+    private String address;
+    @Column(name = "representativeName")
+    private String representativeName;
+    @Column(name = "phone")
+    private String phone;
+    @Column(name = "clinic-code")
+    private String clinicCode;
+    @Column(name = "email")
+    private String email;
+    @Column(name = "website")
+    private String website;
 }

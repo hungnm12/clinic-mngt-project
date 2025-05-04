@@ -23,4 +23,6 @@ public interface StaffService {
 //    StaffEntity signUp(SignUpReqDto signUp);
 
     GeneralResponse searchStaff(UpdReqDto updReqDto);
+
+
 }

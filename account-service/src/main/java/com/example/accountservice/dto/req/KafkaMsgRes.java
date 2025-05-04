@@ -1,4 +1,4 @@
-package com.example.staffmngt.dto.req;
+package com.example.accountservice.dto.req;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,12 +10,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RabbitMsgReq {
+public class KafkaMsgRes {
 
-    @JsonProperty("topic")
-    private String topic;
-    @JsonProperty("queue")
-    private String queue;
+
     @JsonProperty("data")
     private Object data;
 }

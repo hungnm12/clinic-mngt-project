@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "staff")
+@Table(name = "staff_history")
 public class StaffHistoryEntity {
 
     @Id
@@ -32,8 +32,9 @@ public class StaffHistoryEntity {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "department")
-    private String department;
+    @ManyToOne
+    @JoinColumn(name = "department_id", referencedColumnName = "department_id")
+    private DepartmentEntity department;
 
     @Column(name = "staff_code")
     private String staffCode;

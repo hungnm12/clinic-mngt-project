@@ -5,30 +5,31 @@ import com.example.staffmngt.constant.StaffConstant;
 import com.example.staffmngt.dto.req.*;
 import com.example.staffmngt.dto.res.GeneralResponse;
 import com.example.staffmngt.dto.res.StaffResDto;
+import com.example.staffmngt.dto.res.KafkaMsgRes;
+import com.example.staffmngt.dto.res.UserInfo;
+import com.example.staffmngt.entity.DepartmentEntity;
 import com.example.staffmngt.entity.StaffEntity;
 import com.example.staffmngt.entity.StaffHistoryEntity;
 import com.example.staffmngt.enumSt.Role;
-import com.example.staffmngt.rabbitmq.RabbitMqProducer;
+import com.example.staffmngt.kafka.service.KafkaProducerService;
+//import com.example.staffmngt.rabbitmq.RabbitMqProducer;
+import com.example.staffmngt.repository.DepartmentRepository;
 import com.example.staffmngt.repository.StaffEntityRepository;
 import com.example.staffmngt.repository.StaffHistoryRepository;
 import com.example.staffmngt.service.StaffService;
 import com.example.staffmngt.utils.ConvertUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
-import java.net.http.HttpResponse;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.aspectj.bridge.MessageUtil.fail;
 
 
 @Slf4j
@@ -40,10 +41,12 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     private StaffHistoryRepository staffHistoryRepository;
 
+    //    @Autowired
+//    private RabbitMqProducer rabbitMqProducer;
     @Autowired
-    private RabbitMqProducer rabbitMqProducer;
-    @Value("${rabbitmq.queue.name}")
-    private String queueName;
+    private KafkaProducerService kafkaProducerService;
+    @Autowired
+    private DepartmentRepository departmentRepository;
 
 
     @Override
@@ -61,7 +64,7 @@ public class StaffServiceImpl implements StaffService {
         }
         log.info("[addStaff] Tenant ID: {}", tenantId);
 
-        String staffCode = "Staff_" + new Random().nextInt(100);
+        String staffCode = "Staff_" + "_" + staff.getDepartment() + new Random().nextInt(100);
         if (staffEntityRepository.findByEmail(staff.getEmail()) != null) {
             return new GeneralResponse(HttpStatus.CONFLICT.value(), "", "Staff already exists!", null);
         }
@@ -71,13 +74,17 @@ public class StaffServiceImpl implements StaffService {
         if (staff.getPassword() == null || !isValidPassword(staff.getPassword())) {
             return new GeneralResponse(HttpStatus.CONFLICT.value(), "", "Password is invalid!", null);
         }
+        DepartmentEntity department = departmentRepository.findByName(staff.getDepartment());
+        if (department == null) {
+            return new GeneralResponse(HttpStatus.NO_CONTENT.value(), "", "Department is not found", null);
+        }
         StaffHistoryEntity staff1 = StaffHistoryEntity.builder()
                 .email(staff.getEmail())
                 .lastName(staff.getLastName())
                 .firstName(staff.getFirstName())
                 .staffCode(staffCode)
                 .age(staff.getAge())
-                .department(staff.getDepartment())
+                .department(department)
                 .password(Base64.getEncoder().encodeToString(staff.getPassword().getBytes()))
                 .role(String.valueOf(Role.EMPLOYEE))
                 .status(StaffConstant.PENDING)
@@ -91,6 +98,7 @@ public class StaffServiceImpl implements StaffService {
                     .password(staff1.getPassword())
                     .tenantId(tenantId)
                     .status(staff1.getStatus())
+                    .staffCode(staff1.getStaffCode())
                     .build();
 
 
@@ -98,13 +106,12 @@ public class StaffServiceImpl implements StaffService {
             Map<String, Object> dataMap = objectMapper.convertValue(addAccReq, new TypeReference<Map<String, Object>>() {
             });
             log.info("[addStaff] Adding staff: {}", dataMap);
-            RabbitMsgReq rabbitMsgReq = RabbitMsgReq.builder()
-                    .topic("add_acc")
-                    .queue(queueName)
-                    .data(dataMap)
-                    .build();
-            String message = ConvertUtils.marshalJsonAsPrettyString(rabbitMsgReq);
-            rabbitMqProducer.sendCreatedAccToAccSrv(message);
+
+            String message = ConvertUtils.marshalJsonAsPrettyString(addAccReq);
+            log.info("sent msg {}", message);
+            //rabbitMqProducer.sendCreatedAccToAccSrv(message);
+            kafkaProducerService.sendAddAccReq(message);
+
             staffHistoryRepository.save(staff1);
 
             return new GeneralResponse(HttpStatus.CREATED.value(), "", "Staff saved.", staff1);
@@ -128,13 +135,17 @@ public class StaffServiceImpl implements StaffService {
         if (st == null) {
             return null;
         }
+        DepartmentEntity department = departmentRepository.findByName(staff.getDepartment());
+        if (department == null) {
+            return new GeneralResponse(HttpStatus.NO_CONTENT.value(), "", "Department is not found", null);
+        }
         StaffEntity updStff = StaffEntity.builder()
                 .email(staff.getEmail())
                 .lastName(staff.getLastName())
                 .firstName(staff.getFirstName())
                 .staffCode(st.getStaffCode())
                 .age(staff.getAge())
-                .department(staff.getDepartment())
+                .department(department)
                 .role(st.getRole())
                 .build();
 
@@ -218,23 +229,45 @@ public class StaffServiceImpl implements StaffService {
     }
 
 
-    public void processResponseStaffFromQueue(RabbitMsgReq rabbitMsgReq) {
-        ObjectMapper objectMapper = new ObjectMapper();
+    public void processResponseStaffFromQueue(UserInfo userInfo) {
 
         try {
-            // Convert Map data to StaffResDto
-            StaffResDto staffResDto = objectMapper.convertValue(rabbitMsgReq.getData(), StaffResDto.class);
+
+            StaffHistoryEntity staffHistoryEntity = staffHistoryRepository.findByStaffCodeOrderByIdDesc(userInfo.getStaffCode());
+            if (staffHistoryEntity == null) {
+                return;
+            }
+            DepartmentEntity department = departmentRepository.findByName(staffHistoryEntity.getDepartment().getName());
+            if (department == null) {
+                return;
+            }
+            //New his staff upd
+            StaffHistoryEntity staff1 = StaffHistoryEntity.builder()
+                    .email(userInfo.getEmail())
+                    .lastName(staffHistoryEntity.getLastName())
+                    .firstName(staffHistoryEntity.getFirstName())
+                    .staffCode(staffHistoryEntity.getStaffCode())
+                    .age(staffHistoryEntity.getAge())
+                    .department(department)
+                    .password(userInfo.getPassword())
+                    .role(userInfo.getRoles())
+                    .status(userInfo.getStatus())
+                    .build();
+
+            staffHistoryRepository.save(staff1);
+
 
             // Build StaffEntity using the converted DTO
             StaffEntity staffEntity = StaffEntity.builder()
-                    .email(staffResDto.getEmail())
-                    .firstName(staffResDto.getFirstName())
-                    .lastName(staffResDto.getLastName())
-                    .password(staffResDto.getPassword())
-                    .role(staffResDto.getRole())
-                    .staffCode(staffResDto.getStaffCode())
-                    .department(staffResDto.getDepartment())
-                    .status(staffResDto.getStatus())
+                    .age(staffHistoryEntity.getAge())
+                    .email(staffHistoryEntity.getEmail())
+                    .firstName(staffHistoryEntity.getFirstName())
+                    .lastName(staffHistoryEntity.getLastName())
+                    .password(userInfo.getPassword())
+                    .role(userInfo.getRoles())
+                    .staffCode(userInfo.getStaffCode())
+                    .department(department)
+                    .status(userInfo.getStatus())
                     .build();
             staffEntityRepository.save(staffEntity);
 
@@ -242,5 +275,57 @@ public class StaffServiceImpl implements StaffService {
             log.error("Error processing staff response: ", e);
         }
     }
+
+//    @Test
+//    void givenSystem_whenUsingOSHI_thenExtractSystemUptime() {
+//        SystemInfo si = new SystemInfo();
+//        OperatingSystem os = si.getOperatingSystem();
+//
+//        long uptime = os.getSystemUptime();
+//        assertTrue(uptime >= 0, "System uptime should be non-negative");
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            fail("Test interrupted");
+//        }
+//        long newUptime = os.getSystemUptime();
+//        assertTrue(newUptime >= uptime, "Uptime should increase over time");
+//    }
+//
+//    @Test
+//    void givenSystem_whenUsingOSHI_thenExtractCPUDetails() {
+//        SystemInfo si = new SystemInfo();
+//        CentralProcessor processor = si.getHardware().getProcessor();
+//
+//        assertNotNull(processor, "Processor object should not be null");
+//        assertTrue(processor.getPhysicalProcessorCount() > 0, "CPU must have at least one physical core");
+//        assertTrue(processor.getLogicalProcessorCount() >= processor.getPhysicalProcessorCount(),
+//                "Logical cores should be greater than or equal to physical cores");
+//    }
+//
+//    @Test
+//    void givenSystem_whenUsingOSHI_thenExtractCPULoad() throws InterruptedException {
+//        SystemInfo si = new SystemInfo();
+//        CentralProcessor processor = si.getHardware().getProcessor();
+//
+//        long[] prevTicks = processor.getSystemCpuLoadTicks();
+//        TimeUnit.SECONDS.sleep(1);
+//        double cpuLoad = processor.getSystemCpuLoadBetweenTicks(prevTicks) * 100;
+//
+//        assertTrue(cpuLoad >= 0 && cpuLoad <= 100, "CPU load should be between 0% and 100%");
+//    }
+//
+//    @Test
+//    void givenSystem_whenUsingOSHI_thenExtractDiskDetails() {
+//        SystemInfo si = new SystemInfo();
+//        List<HWDiskStore> diskStores = si.getHardware().getDiskStores();
+//
+//        assertFalse(diskStores.isEmpty(), "There should be at least one disk");
+//
+//        for (HWDiskStore disk : diskStores) {
+//            assertNotNull(disk.getModel(), "Disk model should not be null");
+//            assertTrue(disk.getSize() >= 0, "Disk size should be non-negative");
+//        }
+//    }
 
 }

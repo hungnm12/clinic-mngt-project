@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "departments")
 @Data
@@ -19,5 +22,12 @@ public class DepartmentEntity {
 
     @Column(name = "name", unique = true, nullable = false)
     private String name;
+
+
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ServiceEntity> serviceLst = new ArrayList<>();
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<StaffEntity> staffLst = new ArrayList<>();
+
 }
 

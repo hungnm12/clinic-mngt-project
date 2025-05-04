@@ -47,8 +47,8 @@ public class TenantService {
         return t;
     }
 
-    public MultiTenantsEntity getTenantById(String clinicId) {
-        return tenantRepository.findByClinicCode(clinicId);
+    public MultiTenantsEntity getTenantById(String tenantId) {
+        return tenantRepository.findByTenantId(tenantId);
 
 
     }
@@ -93,16 +93,16 @@ public class TenantService {
             return null;
         }
         MultiTenantsEntity t = tenantRepository.findByClinicCode(tenantReq.getClinicCode());
-            t.setAddress(tenantReq.getAddress());
-            t.setEmail(tenantReq.getEmail());
-            t.setPhone(tenantReq.getPhone());
-            t.setClinicName(tenantReq.getClinicName());
-            t.setSchemaName(tenantReq.getSchemaName());
-            t.setRepresentativeName(tenantReq.getRepresentativeName());
-            t.setWebsite(tenantReq.getWebsite());
-            t.setUsername(tenantReq.getUsername());
-            t.setPassword(tenantReq.getPassword());
-            t.setDbUrl(tenantReq.getDbUrl());
+        t.setAddress(tenantReq.getAddress());
+        t.setEmail(tenantReq.getEmail());
+        t.setPhone(tenantReq.getPhone());
+        t.setClinicName(tenantReq.getClinicName());
+        t.setSchemaName(tenantReq.getSchemaName());
+        t.setRepresentativeName(tenantReq.getRepresentativeName());
+        t.setWebsite(tenantReq.getWebsite());
+        t.setUsername(tenantReq.getUsername());
+        t.setPassword(tenantReq.getPassword());
+        t.setDbUrl(tenantReq.getDbUrl());
         SqlCredentialReq sqlCredentialReq = new SqlCredentialReq();
         sqlCredentialReq.setUsername(tenantReq.getUsername());
         sqlCredentialReq.setPassword(tenantReq.getPassword());

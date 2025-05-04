@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StaffHistoryRepository extends JpaRepository<StaffHistoryEntity, Long> {
+
+    StaffHistoryEntity findByStaffCodeOrderByIdDesc(String staffCode);
 }

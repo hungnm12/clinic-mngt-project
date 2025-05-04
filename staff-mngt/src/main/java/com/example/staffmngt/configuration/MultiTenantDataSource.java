@@ -62,6 +62,7 @@ public class MultiTenantDataSource extends AbstractRoutingDataSource {
 
 
     public void addTenantDataSource(String tenantId) {
+        log.info("start with tenantId: {}", tenantId);
         if (!dataSources.containsKey(tenantId)) {
             MultiTenantsEntity tenant = tenantFeignClient.getTenant(tenantId);
             // 🔹 Debugging: Log the retrieved tenant details

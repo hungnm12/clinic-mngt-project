@@ -29,14 +29,17 @@ public class StaffEntity {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "department")
-    private String department;
+    @ManyToOne
+    @JoinColumn(name = "department_id", referencedColumnName = "department_id")
+    private DepartmentEntity department;
 
     @Column(name = "staff_code")
     private String staffCode;
 
     @Column(name = "password")
     private String password;
+
+
     @Column(name = "status")
     private String status;
 

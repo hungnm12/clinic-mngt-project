@@ -21,4 +21,6 @@ public class AddAccReq {
     private String type;
     @JsonProperty("status")
     private String status;
+    @JsonProperty("staffCode")
+    private String staffCode;
 }
