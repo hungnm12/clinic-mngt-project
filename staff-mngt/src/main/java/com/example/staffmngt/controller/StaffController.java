@@ -47,11 +47,18 @@ public class StaffController {
         return staffService.searchStaff(updReqDto);
     }
 
-    @PostMapping("/list")
+    @GetMapping("/list")
     GeneralResponse listStaff(@RequestBody ListStaffSearchReq staffReqDto, @RequestHeader("X-Tenant-ID") String tenantId) {
         System.out.println("Received tenant ID: " + tenantId);
         TenantContext.setTenant(tenantId);
         return staffService.getListStaff(staffReqDto);
 
     }
+
+    @GetMapping("/all")
+    GeneralResponse getAllStaff() {
+        return staffService.getAllStaff();
+    }
+
+
 }

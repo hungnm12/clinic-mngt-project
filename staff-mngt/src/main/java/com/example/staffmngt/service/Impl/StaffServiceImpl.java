@@ -224,6 +224,13 @@ public class StaffServiceImpl implements StaffService {
         return new GeneralResponse(org.apache.http.HttpStatus.SC_OK, "", "service list", new ListContentPageDto<>(StaffResDtoPage, StaffResDtoPage.getContent()));
     }
 
+    @Override
+    public GeneralResponse getAllStaff() {
+
+
+        return new GeneralResponse(HttpStatus.OK.value(), "", "All staff", staffEntityRepository.findAll());
+    }
+
     private boolean isValidEmail(String email) {
         if (email == null || email.length() < 5) {
             return false;

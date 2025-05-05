@@ -13,4 +13,6 @@ public interface ServiceClinicService {
 
     GeneralResponse getListServices(AddServiceReq addServiceReq);
 
+    GeneralResponse getAllServices();
+
 }

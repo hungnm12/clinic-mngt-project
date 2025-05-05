@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface StaffEntityRepository extends JpaRepository<StaffEntity, Long> {
@@ -54,6 +55,8 @@ public interface StaffEntityRepository extends JpaRepository<StaffEntity, Long> 
             @Param("staffCode") String staffCode,
             @Param("role") String role,
             Pageable pageable);
+
+
 
 
 }

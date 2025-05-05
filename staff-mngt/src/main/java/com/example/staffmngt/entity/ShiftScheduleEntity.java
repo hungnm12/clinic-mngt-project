@@ -18,6 +18,10 @@ public class ShiftScheduleEntity {
     @Column(name = "shift_id")
     private Long id;
 
+
+    @Column(name = "shift_code")
+    private String shiftCode;
+
     @ManyToOne
     @JoinColumn(name = "staff_id", nullable = false)
     private StaffEntity staff;
@@ -33,9 +37,5 @@ public class ShiftScheduleEntity {
 
     @Column(name = "booked_time")
     private Date bookedTime;
-
-
-
-
 
 }

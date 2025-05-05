@@ -27,5 +27,7 @@ public interface StaffService {
 
     GeneralResponse getListStaff(ListStaffSearchReq staffSearchReq);
 
+    GeneralResponse getAllStaff();
+
 
 }

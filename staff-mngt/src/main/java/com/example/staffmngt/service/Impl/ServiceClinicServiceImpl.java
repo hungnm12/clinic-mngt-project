@@ -148,4 +148,9 @@ public class ServiceClinicServiceImpl implements ServiceClinicService {
         return new GeneralResponse(HttpStatus.SC_OK, "", "service list", new ListContentPageDto<>(ServiceResDtoPage, ServiceResDtoPage.getContent()));
 
     }
+
+    @Override
+    public GeneralResponse getAllServices() {
+        return new GeneralResponse(HttpStatus.SC_OK, "", "service list", serviceRepository.findAll());
+    }
 }

@@ -45,4 +45,9 @@ public class ServiceController {
         return serviceClinicService.getListServices(addServiceReq);
     }
 
+    @GetMapping("/all")
+    GeneralResponse getAllServices() {
+        return serviceClinicService.getAllServices();
+    }
+
 }
