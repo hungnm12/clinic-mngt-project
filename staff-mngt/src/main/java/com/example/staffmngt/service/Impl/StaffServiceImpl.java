@@ -220,7 +220,7 @@ public class StaffServiceImpl implements StaffService {
 
 
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<StaffResDto> StaffResDtoPage = staffEntityRepository.getListOfStaff(staffSearchReq.getLastName(), staffSearchReq.getFirstName(), staffSearchReq.getEmail(), staffSearchReq.getEmail(), staffSearchReq.getStaffCode(), staffSearchReq.getRole(), pageable);
+        Page<StaffResDto> StaffResDtoPage = staffEntityRepository.getListOfStaff(staffSearchReq.getLastName(), staffSearchReq.getFirstName(), staffSearchReq.getEmail(), staffSearchReq.getStaffCode(), staffSearchReq.getRole(), pageable);
         return new GeneralResponse(org.apache.http.HttpStatus.SC_OK, "", "service list", new ListContentPageDto<>(StaffResDtoPage, StaffResDtoPage.getContent()));
     }
 

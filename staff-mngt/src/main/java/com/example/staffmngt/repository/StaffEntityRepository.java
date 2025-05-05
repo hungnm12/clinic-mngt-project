@@ -38,23 +38,22 @@ public interface StaffEntityRepository extends JpaRepository<StaffEntity, Long> 
 
 
     @Query("select new com.example.staffmngt.dto.res.StaffResDto(" +
-            "s.lastName, s.firstName, s.age, s.role, s.email, s.department, " +
-            "s.staffCode, s.password, s.status, s.lstShift) " +
+            "s.lastName, s.firstName, s.age, s.role, s.email,  " +
+            "s.staffCode, s.password, s.status,s.lstShift) " +
             "from StaffEntity s " +
-            "where (:staffCode is null or :staffCode = '' or s.staffCode like %:staffCode%)" +
-            "and (:department is null or :department = '' or s.department.name like %:department%)" +
-            "and (:lastName is null or :lastName = '' or s.lastName like %:lastName%)" +
-            "and (:firstName is null or :firstName = '' or s.firstName like %:firstName%)" +
-            "and (:email is null or :email = '' or s.email like %:email%)" +
+            "where (:staffCode is null or :staffCode = '' or s.staffCode like %:staffCode%) " +
+            "and (:lastName is null or :lastName = '' or s.lastName like %:lastName%) " +
+            "and (:firstName is null or :firstName = '' or s.firstName like %:firstName%) " +
+            "and (:email is null or :email = '' or s.email like %:email%) " +
             "and (:role is null or :role = '' or s.role like %:role%)")
     Page<StaffResDto> getListOfStaff(
-            @Param("last_name") String lastName,
-            @Param("first_name") String firstName,
+            @Param("lastName") String lastName,
+            @Param("firstName") String firstName,
             @Param("email") String email,
-            @Param("department") String department,
             @Param("staffCode") String staffCode,
             @Param("role") String role,
             Pageable pageable);
+
 
 
 

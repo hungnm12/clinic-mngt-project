@@ -12,36 +12,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class StaffResDto {
 
     @JsonProperty("last_name")
     private String lastName;
     @JsonProperty("first_name")
     private String firstName;
-
     @JsonProperty("age")
     private Integer age;
-
     @JsonProperty("role")
     private String role;
-
     @JsonProperty("email")
     private String email;
-
-    @JsonProperty("department")
-    private DepartmentEntity department;
-
     @JsonProperty("staff_code")
     private String staffCode;
-
     @JsonProperty("password")
     private String password;
-
     @JsonProperty("status")
     private String status;
-
     @JsonProperty("lstShift")
-    private List<ShiftScheduleEntity> lstShift;
+    private Object lstShift;
 }
