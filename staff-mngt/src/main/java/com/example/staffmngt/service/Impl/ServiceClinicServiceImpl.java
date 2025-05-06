@@ -129,7 +129,7 @@ public class ServiceClinicServiceImpl implements ServiceClinicService {
                 sort = Sort.by(Sort.Direction.DESC, addServiceReq.getSortBy());
             }
         } else {
-            sort = Sort.by(Sort.Direction.DESC, "createdDate");
+            sort = Sort.by(Sort.Direction.DESC, "id");
         }
 
         int page = 0;

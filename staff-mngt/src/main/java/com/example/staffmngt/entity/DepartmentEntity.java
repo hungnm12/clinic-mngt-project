@@ -26,6 +26,7 @@ public class DepartmentEntity {
 
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ServiceEntity> serviceLst = new ArrayList<>();
+
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<StaffEntity> staffLst = new ArrayList<>();
 

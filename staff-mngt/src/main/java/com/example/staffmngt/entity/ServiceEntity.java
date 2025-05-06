@@ -30,6 +30,6 @@ public class ServiceEntity {
     private double price;
 
     @ManyToOne
-    @JoinColumn(name = "department_id", referencedColumnName = "department_id")
+    @JoinColumn(name = "department_id")
     private DepartmentEntity department;
 }

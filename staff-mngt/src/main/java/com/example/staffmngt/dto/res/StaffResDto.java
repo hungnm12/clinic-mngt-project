@@ -32,6 +32,6 @@ public class StaffResDto {
     private String password;
     @JsonProperty("status")
     private String status;
-    @JsonProperty("lstShift")
-    private Object lstShift;
+//    @JsonProperty("lstShift")
+//    private Object lstShift;
 }

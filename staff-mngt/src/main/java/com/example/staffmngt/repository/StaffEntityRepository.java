@@ -39,7 +39,7 @@ public interface StaffEntityRepository extends JpaRepository<StaffEntity, Long> 
 
     @Query("select new com.example.staffmngt.dto.res.StaffResDto(" +
             "s.lastName, s.firstName, s.age, s.role, s.email,  " +
-            "s.staffCode, s.password, s.status,s.lstShift) " +
+            "s.staffCode, s.password, s.status) " +
             "from StaffEntity s " +
             "where (:staffCode is null or :staffCode = '' or s.staffCode like %:staffCode%) " +
             "and (:lastName is null or :lastName = '' or s.lastName like %:lastName%) " +

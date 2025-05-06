@@ -33,7 +33,7 @@ public class StaffHistoryEntity {
     private String email;
 
     @ManyToOne
-    @JoinColumn(name = "department_id", referencedColumnName = "department_id")
+    @JoinColumn(name = "department_id")
     private DepartmentEntity department;
 
     @Column(name = "staff_code")
