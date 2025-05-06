@@ -21,8 +21,7 @@ public interface ServiceRepository extends JpaRepository<ServiceEntity, Long> {
     @Query(value = "select new com.example.staffmngt.dto.res.ServiceResDto(" +
             "l.serviceName, " +
             "l.serviceCode, " +
-            "l.price, " +
-            "l.department) " +
+            "l.price) " +
             "from ServiceEntity l " +
             "where (:serviceName is null or :serviceName = '' or l.serviceName like %:serviceName%) " +
             "and (:serviceCode is null or :serviceCode = '' or l.serviceCode like %:serviceCode%)")

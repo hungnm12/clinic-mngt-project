@@ -21,6 +21,6 @@ public class ServiceResDto {
     @JsonProperty("price")
     private double price;
 
-    @JsonProperty("department")
-    private DepartmentEntity department;
+//    @JsonProperty("department")
+//    private DepartmentEntity department;
 }
