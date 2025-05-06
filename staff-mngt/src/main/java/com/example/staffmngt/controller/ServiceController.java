@@ -40,8 +40,9 @@ public class ServiceController {
         return serviceClinicService.addService(addServiceReq);
     }
 
-    @PostMapping("/search")
-    GeneralResponse searchService(@RequestBody AddServiceReq addServiceReq) {
+    @PostMapping("/list")
+    GeneralResponse getListService(@RequestBody AddServiceReq addServiceReq, @RequestHeader("X-Tenant-ID") String tenantId) {
+        TenantContext.setTenant(tenantId);
         return serviceClinicService.getListServices(addServiceReq);
     }
 
