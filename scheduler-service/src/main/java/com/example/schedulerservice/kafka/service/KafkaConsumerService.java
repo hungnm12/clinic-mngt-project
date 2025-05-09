@@ -17,20 +17,20 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class KafkaConsumerService {
 
-
-    @KafkaListener(topics = "${}",
-            groupId = "clinic-mngt-service-group",
-            containerFactory = "kafkaListenerContainerFactory")
-    public void receiveMessage(String event, Acknowledgment acknowledgment,
-                               @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-                               @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
-                               @Header(KafkaHeaders.OFFSET) int offsets) throws JsonProcessingException {
-
-        log.info("[subscribeEventMigrationStatus] [partition: {}, offset: {} | topic: {}] Received message: {}",
-                partition, offsets, topic, event);
-
-        acknowledgment.acknowledge();
-    }
+//
+//    @KafkaListener(topics = "${}",
+//            groupId = "clinic-mngt-service-group",
+//            containerFactory = "kafkaListenerContainerFactory")
+//    public void receiveMessage(String event, Acknowledgment acknowledgment,
+//                               @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+//                               @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
+//                               @Header(KafkaHeaders.OFFSET) int offsets) throws JsonProcessingException {
+//
+//        log.info("[subscribeEventMigrationStatus] [partition: {}, offset: {} | topic: {}] Received message: {}",
+//                partition, offsets, topic, event);
+//
+//        acknowledgment.acknowledge();
+//    }
 }
 
 

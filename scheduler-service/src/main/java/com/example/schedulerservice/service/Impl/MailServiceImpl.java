@@ -141,4 +141,10 @@ public class MailServiceImpl implements MailService {
         return null;
     }
 
+
+//    @PostConstruct
+//    public void init() {
+//        log.info("sending mail...");
+//        sendMail(getMailSession(), new MailInfoReqDto("vtdung220402@gmail.com", "test", "fadsfadssafdsafsad", null));
+//    }
 }
