@@ -205,7 +205,7 @@ public class StaffServiceImpl implements StaffService {
                 sort = Sort.by(Sort.Direction.DESC, staffSearchReq.getSortBy());
             }
         } else {
-            sort = Sort.by(Sort.Direction.DESC, "createdDate");
+            sort = Sort.by(Sort.Direction.DESC, "id");
         }
 
         int page = 0;
