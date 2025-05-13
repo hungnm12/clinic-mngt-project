@@ -10,6 +10,7 @@ import com.example.staffmngt.repository.DepartmentRepository;
 import com.example.staffmngt.repository.ServiceRepository;
 import com.example.staffmngt.service.ServiceClinicService;
 import com.example.staffmngt.utils.StringUtil;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Base64;
 import java.util.Date;
 
 
@@ -59,6 +61,7 @@ public class ServiceClinicServiceImpl implements ServiceClinicService {
         ServiceEntity serviceEntity = new ServiceEntity();
         serviceEntity.setServiceCode(addServiceReq.getServiceCode());
         serviceEntity.setServiceName(addServiceReq.getServiceName());
+        serviceEntity.setNote(addServiceReq.getNote());
         serviceEntity.setDepartment(department);
         serviceEntity.setPrice(addServiceReq.getPrice());
         serviceRepository.save(serviceEntity);
@@ -110,6 +113,7 @@ public class ServiceClinicServiceImpl implements ServiceClinicService {
         existingService.setServiceName(addServiceReq.getServiceName());
         existingService.setServiceCode(addServiceReq.getServiceCode());
         existingService.setPrice(addServiceReq.getPrice());
+        existingService.setNote(addServiceReq.getNote());
         existingService.setDepartment(department);
 
         serviceRepository.save(existingService);
@@ -153,4 +157,8 @@ public class ServiceClinicServiceImpl implements ServiceClinicService {
     public GeneralResponse getAllServices() {
         return new GeneralResponse(HttpStatus.SC_OK, "", "service list", serviceRepository.findAll());
     }
+//    @PostConstruct
+//    private void init() {
+//        String s = Base64.getDecoder().decode("$10$3q466kZpXhxU6HuSKIPjZOBZb.RnDNbN2LiIZ7uqFqg3PeNMU.eBu")
+//    }
 }

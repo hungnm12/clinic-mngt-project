@@ -25,7 +25,8 @@ public class ServiceEntity {
 
     @Column(name = "service_code")
     private String serviceCode;
-
+    @Column(name = "note")
+    private String note;
     @Column(name = "price")
     private double price;
 

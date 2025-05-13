@@ -22,7 +22,10 @@ public class UserInfo {
 
     @JsonProperty("password")
     private String password;
-
+    @JsonProperty("phone")
+    private String phone;
+    @JsonProperty("specialty")
+    private String specialty;
     @JsonProperty("roles")
     private String roles;
 

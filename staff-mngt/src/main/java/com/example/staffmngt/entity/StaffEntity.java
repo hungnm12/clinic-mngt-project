@@ -18,9 +18,9 @@ public class StaffEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "last_name")
+    @Column(name = "lastName")
     private String lastName;
-    @Column(name = "first_name")
+    @Column(name = "firstName")
     private String firstName;
 
     @Column(name = "age")
@@ -31,12 +31,15 @@ public class StaffEntity {
 
     @Column(name = "email")
     private String email;
-
+    @Column(name = "phone")
+    private String phone;
+    @Column(name = "specialty")
+    private String specialty;
     @ManyToOne
     @JoinColumn(name = "department_id")
     private DepartmentEntity department;
 
-    @Column(name = "staff_code")
+    @Column(name = "staffCode")
     private String staffCode;
 
     @Column(name = "password")

@@ -28,7 +28,10 @@ public class StaffHistoryEntity {
 
     @Column(name = "role")
     private String role;
-
+    @Column(name ="phone")
+    private String phone;
+    @Column(name ="specialty")
+    private String specialty;
     @Column(name = "email")
     private String email;
 
@@ -36,7 +39,7 @@ public class StaffHistoryEntity {
     @JoinColumn(name = "department_id")
     private DepartmentEntity department;
 
-    @Column(name = "staff_code")
+    @Column(name = "staffCode")
     private String staffCode;
 
     @Column(name = "password")

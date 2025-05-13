@@ -38,21 +38,26 @@ public interface StaffEntityRepository extends JpaRepository<StaffEntity, Long> 
 
 
     @Query("select new com.example.staffmngt.dto.res.StaffResDto(" +
-            "s.lastName, s.firstName, s.age, s.role, s.email,  " +
+            "s.lastName, s.firstName, s.age, s.role,s.phone,s.specialty,s.email, " +
             "s.staffCode, s.password, s.status) " +
             "from StaffEntity s " +
-            "where (:staffCode is null or :staffCode = '' or s.staffCode like %:staffCode%) " +
-            "and (:lastName is null or :lastName = '' or s.lastName like %:lastName%) " +
-            "and (:firstName is null or :firstName = '' or s.firstName like %:firstName%) " +
-            "and (:email is null or :email = '' or s.email like %:email%) " +
-            "and (:role is null or :role = '' or s.role like %:role%)")
+            "where (:staffCode is null or :staffCode = '' or s.staffCode like concat('%', :staffCode, '%')) " +
+            "and (:lastName is null or :lastName = '' or s.lastName like concat('%', :lastName, '%')) " +
+            "and (:firstName is null or :firstName = '' or s.firstName like concat('%', :firstName, '%')) " +
+            "and (:email is null or :email = '' or s.email like concat('%', :email, '%')) " +
+            "and (:role is null or :role = '' or s.role like concat('%', :role, '%')) " +
+            "and (:phone is null or :phone = '' or s.phone like concat('%', :phone, '%')) " +
+            "and (:specialty is null or :specialty = '' or s.specialty like concat('%', :specialty, '%'))")
     Page<StaffResDto> getListOfStaff(
             @Param("lastName") String lastName,
             @Param("firstName") String firstName,
             @Param("email") String email,
             @Param("staffCode") String staffCode,
             @Param("role") String role,
+            @Param("phone") String phone,
+            @Param("specialty") String specialty,
             Pageable pageable);
+
 
 
 

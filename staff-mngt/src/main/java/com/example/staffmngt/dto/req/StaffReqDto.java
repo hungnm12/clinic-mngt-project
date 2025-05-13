@@ -6,14 +6,17 @@ import lombok.Data;
 
 @Data
 public class StaffReqDto {
-    @JsonProperty("last_name")
+    @JsonProperty("lastName")
     private String lastName;
-    @JsonProperty("first_name")
+    @JsonProperty("firstName")
     private String firstName;
 
     @JsonProperty("password")
     private String password;
-
+    @JsonProperty("phone")
+    private String phone;
+    @JsonProperty("specialty")
+    private String specialty;
     @JsonProperty("age")
     private Integer age;
 

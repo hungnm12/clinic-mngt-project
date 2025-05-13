@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 public class UpdReqDto {
-    @JsonProperty("last_name")
+    @JsonProperty("lastName")
     private String lastName;
-    @JsonProperty("first_name")
+    @JsonProperty("firstName")
     private String firstName;
 
     @JsonProperty("password")
@@ -15,7 +15,10 @@ public class UpdReqDto {
 
     @JsonProperty("age")
     private Integer age;
-
+    @JsonProperty("phone")
+    private String phone;
+    @JsonProperty("specialty")
+    private String specialty;
     @JsonProperty("role")
     private String role;
 

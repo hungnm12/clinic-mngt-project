@@ -85,6 +85,8 @@ public class StaffServiceImpl implements StaffService {
                 .lastName(staff.getLastName())
                 .firstName(staff.getFirstName())
                 .staffCode(staffCode)
+                .phone(staff.getPhone())
+                .specialty(staff.getSpecialty())
                 .age(staff.getAge())
                 .department(department)
                 .password(Base64.getEncoder().encodeToString(staff.getPassword().getBytes()))
@@ -144,6 +146,8 @@ public class StaffServiceImpl implements StaffService {
         st.setLastName(staff.getLastName());
         st.setFirstName(staff.getFirstName());
         st.setEmail(staff.getEmail());
+        st.setSpecialty(staff.getSpecialty());
+        st.setPhone(staff.getPhone());
         st.setPassword(staff.getPassword());
         st.setRole(staff.getRole());
         st.setStaffCode(staff.getStaffCode());
@@ -220,7 +224,7 @@ public class StaffServiceImpl implements StaffService {
 
 
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<StaffResDto> StaffResDtoPage = staffEntityRepository.getListOfStaff(staffSearchReq.getLastName(), staffSearchReq.getFirstName(), staffSearchReq.getEmail(), staffSearchReq.getStaffCode(), staffSearchReq.getRole(), pageable);
+        Page<StaffResDto> StaffResDtoPage = staffEntityRepository.getListOfStaff(staffSearchReq.getLastName(), staffSearchReq.getFirstName(), staffSearchReq.getEmail(), staffSearchReq.getStaffCode(), staffSearchReq.getRole(),staffSearchReq.getPhone(),staffSearchReq.getSpecialty(), pageable);
         return new GeneralResponse(org.apache.http.HttpStatus.SC_OK, "", "service list", new ListContentPageDto<>(StaffResDtoPage, StaffResDtoPage.getContent()));
     }
 
@@ -284,6 +288,8 @@ public class StaffServiceImpl implements StaffService {
                     .firstName(staffHistoryEntity.getFirstName())
                     .staffCode(staffHistoryEntity.getStaffCode())
                     .age(staffHistoryEntity.getAge())
+                    .phone(staffHistoryEntity.getPhone())
+                    .specialty(staffHistoryEntity.getSpecialty())
                     .department(department)
                     .password(userInfo.getPassword())
                     .role(userInfo.getRoles())
@@ -301,6 +307,8 @@ public class StaffServiceImpl implements StaffService {
                     .lastName(staffHistoryEntity.getLastName())
                     .password(userInfo.getPassword())
                     .role(userInfo.getRoles())
+                    .phone(staffHistoryEntity.getPhone())
+                    .specialty(staffHistoryEntity.getSpecialty())
                     .staffCode(userInfo.getStaffCode())
                     .department(department)
                     .status(userInfo.getStatus())
