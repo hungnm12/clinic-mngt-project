@@ -21,6 +21,9 @@ public interface StaffEntityRepository extends JpaRepository<StaffEntity, Long> 
 
     StaffEntity findByEmail(String email);
 
+//    // tim` theo pec ci a ti
+//    List<StaffEntity> findAllBySpecialty(String specialty);
+
 
     @Query("select s from StaffEntity s where (:department is null or s.department = :department) " +
 
@@ -53,9 +56,6 @@ public interface StaffEntityRepository extends JpaRepository<StaffEntity, Long> 
             @Param("staffCode") String staffCode,
             @Param("role") String role,
             Pageable pageable);
-
-
-
 
 
 }
