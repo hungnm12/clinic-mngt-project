@@ -60,7 +60,4 @@ public interface StaffEntityRepository extends JpaRepository<StaffEntity, Long> 
 
 
 
-
-
-
 }

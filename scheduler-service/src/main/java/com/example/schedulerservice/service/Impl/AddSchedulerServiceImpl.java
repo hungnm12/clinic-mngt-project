@@ -5,15 +5,23 @@ import com.example.schedulerservice.dto.res.GeneralResponse;
 import com.example.schedulerservice.entity.SchedulerEntity;
 import com.example.schedulerservice.repository.SchedulerRepository;
 import com.example.schedulerservice.service.SchedulerService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 
 @Service
+@Slf4j
 public class AddSchedulerServiceImpl implements SchedulerService {
-
+    private static final ZoneId POLICY_ZONE = ZoneId.of("Asia/Ho_Chi_Minh");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     private final SchedulerRepository schedulerRepository;
     private final ThymeLeafServiceImpl thymeLeafService;
 
@@ -23,7 +31,7 @@ public class AddSchedulerServiceImpl implements SchedulerService {
     }
 
     @Override
-    public GeneralResponse addScheduler(AddSchedulerReq addSchedulerReq) {
+    public GeneralResponse addScheduler(AddSchedulerReq addSchedulerReq) throws ParseException {
 
         String orderCode = "Order_" + "_" + addSchedulerReq.getOrderedSrv() + new Random().nextInt(100);
         if (schedulerRepository.existsBySchedulerCode(orderCode)) {
@@ -33,8 +41,7 @@ public class AddSchedulerServiceImpl implements SchedulerService {
         SchedulerEntity schedulerEntity = SchedulerEntity.builder()
                 .schedulerCode(orderCode)
                 .note(addSchedulerReq.getNote())
-                .apmtDate(addSchedulerReq.getApmtDate())
-                .apmtTime(addSchedulerReq.getApmtTime())
+                .dateApmt(convertToZonedDateTime(addSchedulerReq.getApmtDate().toString(), addSchedulerReq.getApmtTime().toString()))
                 .drName(addSchedulerReq.getDrName())
                 .patientEmail(addSchedulerReq.getPatientEmail())
                 .patientName(addSchedulerReq.getPatientName())
@@ -45,6 +52,21 @@ public class AddSchedulerServiceImpl implements SchedulerService {
         schedulerRepository.save(schedulerEntity);
 
         return new GeneralResponse(HttpStatus.SC_OK, "", "Order added successfully!", schedulerEntity);
+    }
+
+    private ZonedDateTime convertToZonedDateTime(String date, String time) {
+        log.info("date: {}, time: {}", date, time);
+        String dateTimeString = date + " " + time; // e.g., "2025-05-15 10:30:00"
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime localDateTime = LocalDateTime.parse(dateTimeString, formatter);
+
+        // Set time zone to Asia/Bangkok (ICT)
+
+        ZonedDateTime zonedDateTime = localDateTime.atZone(POLICY_ZONE);
+
+        log.info("Parsed ZonedDateTime: {}", zonedDateTime);
+        return zonedDateTime;
     }
 
 

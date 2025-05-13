@@ -29,5 +29,11 @@ public interface StaffService {
 
     GeneralResponse getAllStaff();
 
+   GeneralResponse getStaff(String staffCode);
+
+    GeneralResponse getDrBySpecialty(String specialty);
+
+    GeneralResponse getSpecialtyByDr(String staffCode);
+
 
 }

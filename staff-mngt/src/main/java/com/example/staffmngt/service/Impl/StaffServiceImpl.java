@@ -235,6 +235,35 @@ public class StaffServiceImpl implements StaffService {
         return new GeneralResponse(HttpStatus.OK.value(), "", "All staff", staffEntityRepository.findAll());
     }
 
+    @Override
+    public GeneralResponse getStaff(String staffCode) {
+        if (staffCode == null) {
+            return new GeneralResponse(HttpStatus.NO_CONTENT.value(), "", "Staff object is null, cannot proceed.", null);
+        }
+        StaffEntity staff = staffEntityRepository.findByStaffCode(staffCode);
+        if (staff == null) {
+            return new GeneralResponse(HttpStatus.NO_CONTENT.value(), "", "Staff object is null, cannot proceed.", null);
+        }
+        return new GeneralResponse(HttpStatus.OK.value(), "", "Staff found", staff);
+    }
+
+    @Override
+    public GeneralResponse getDrBySpecialty(String specialty) {
+        if (specialty == null) {
+            return new GeneralResponse(HttpStatus.NO_CONTENT.value(), "", "Staff object is null, cannot proceed.", null);
+        }
+//        //lay dsach bsi thuoc chuyen mon
+//        List<StaffEntity> lst = staffEntityRepository.findAllBySpecialty(specialty);
+
+
+        return null;
+    }
+
+    @Override
+    public GeneralResponse getSpecialtyByDr(String staffCode) {
+        return null;
+    }
+
     private boolean isValidEmail(String email) {
         if (email == null || email.length() < 5) {
             return false;
