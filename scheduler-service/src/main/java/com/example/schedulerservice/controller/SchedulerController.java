@@ -39,25 +39,32 @@ public class SchedulerController {
 
 
     @PostMapping("/addScheduler")
-    GeneralResponse addScheduler(@RequestBody AddSchedulerReq addSchedulerReq, @RequestHeader("X-Tenant-ID") String tenantId) {
+    GeneralResponse addScheduler(@RequestBody AddSchedulerReq addSchedulerReq, @RequestHeader("X-Tenant-ID") String tenantId) throws ParseException {
         TenantContext.setTenant(tenantId);
         MultiTenantsEntity m = tenantFeignClient.getTenant(tenantId);
         String clinicAddress = m.getAddress();
         String clinicPhone = m.getPhone();
 
-        String data = buildMailInfor(addSchedulerReq, clinicAddress, clinicPhone);
-        MailInfoReqDto mail = MailInfoReqDto.builder()
-                .emailReceiver(addSchedulerReq.getPatientEmail())
-                .subject("Appointment Confirmation")
-                .contentMail(data)
-                .attachFile(null)
-                .build();
-        try {
-            mailService.sendMail(mail);
-        } catch (Exception e) {
-            e.printStackTrace();
+        // Call the scheduler service first and check response
+        GeneralResponse response = schedulerService.addScheduler(addSchedulerReq);
+
+        // If response code is 200, send the email
+        if (response.getCode() == 200) {
+            String data = buildMailInfor(addSchedulerReq, clinicAddress, clinicPhone);
+            MailInfoReqDto mail = MailInfoReqDto.builder()
+                    .emailReceiver(addSchedulerReq.getPatientEmail())
+                    .subject("Appointment Confirmation")
+                    .contentMail(data)
+                    .attachFile(null)
+                    .build();
+            try {
+                mailService.sendMail(mail);
+            } catch (Exception e) {
+                e.printStackTrace(); // Consider logging this instead of just printing
+            }
         }
-        return schedulerService.addScheduler(addSchedulerReq);
+
+        return response;
     }
 
     private String buildMailInfor(AddSchedulerReq addSchedulerReq, String clinicAddress, String clinicPhone) {

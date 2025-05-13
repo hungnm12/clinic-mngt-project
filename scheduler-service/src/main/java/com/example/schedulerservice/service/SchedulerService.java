@@ -4,9 +4,11 @@ import com.example.schedulerservice.dto.req.AddSchedulerReq;
 import com.example.schedulerservice.dto.res.GeneralResponse;
 import com.example.schedulerservice.entity.SchedulerEntity;
 
+import java.text.ParseException;
+
 public interface SchedulerService {
 
-    GeneralResponse addScheduler(AddSchedulerReq addSchedulerReq);
+    GeneralResponse addScheduler(AddSchedulerReq addSchedulerReq) throws ParseException;
 
 
 }

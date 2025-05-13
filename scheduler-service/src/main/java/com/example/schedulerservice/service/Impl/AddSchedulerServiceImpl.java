@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -29,7 +31,7 @@ public class AddSchedulerServiceImpl implements SchedulerService {
     }
 
     @Override
-    public GeneralResponse addScheduler(AddSchedulerReq addSchedulerReq) {
+    public GeneralResponse addScheduler(AddSchedulerReq addSchedulerReq) throws ParseException {
 
         String orderCode = "Order_" + "_" + addSchedulerReq.getOrderedSrv() + new Random().nextInt(100);
         if (schedulerRepository.existsBySchedulerCode(orderCode)) {
@@ -39,7 +41,7 @@ public class AddSchedulerServiceImpl implements SchedulerService {
         SchedulerEntity schedulerEntity = SchedulerEntity.builder()
                 .schedulerCode(orderCode)
                 .note(addSchedulerReq.getNote())
-                .dateApmt(convertToLocalDate(addSchedulerReq.getApmtDate().toString(), addSchedulerReq.getApmtTime().toString()))
+                .dateApmt(convertToZonedDateTime(addSchedulerReq.getApmtDate().toString(), addSchedulerReq.getApmtTime().toString()))
                 .drName(addSchedulerReq.getDrName())
                 .patientEmail(addSchedulerReq.getPatientEmail())
                 .patientName(addSchedulerReq.getPatientName())
@@ -52,12 +54,19 @@ public class AddSchedulerServiceImpl implements SchedulerService {
         return new GeneralResponse(HttpStatus.SC_OK, "", "Order added successfully!", schedulerEntity);
     }
 
-    private Date convertToLocalDate(String date, String time) {
+    private ZonedDateTime convertToZonedDateTime(String date, String time) {
         log.info("date: {}, time: {}", date, time);
-        String dateTimeString = date + "T" + time; // e.g., "2025-05-15T17:30:00"
-        LocalDateTime localDateTime = LocalDateTime.parse(dateTimeString, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        String dateTimeString = date + " " + time; // e.g., "2025-05-15 10:30:00"
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime localDateTime = LocalDateTime.parse(dateTimeString, formatter);
+
+        // Set time zone to Asia/Bangkok (ICT)
+
         ZonedDateTime zonedDateTime = localDateTime.atZone(POLICY_ZONE);
-        return Date.from(zonedDateTime.toInstant());
+
+        log.info("Parsed ZonedDateTime: {}", zonedDateTime);
+        return zonedDateTime;
     }
 
 

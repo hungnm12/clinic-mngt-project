@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Entity
@@ -45,7 +46,7 @@ public class SchedulerEntity {
 
     // Date
     @Column(name = "date_apmt")
-    private Date dateApmt;
+    private ZonedDateTime dateApmt;
 
     @Column(name = "note")
     private String note;
