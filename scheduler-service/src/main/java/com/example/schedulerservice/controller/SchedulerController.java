@@ -71,35 +71,12 @@ public class SchedulerController {
         Map<String, Object> emailParams = Map.of(
                 "patientName", addSchedulerReq.getPatientName(),
                 "doctorName", addSchedulerReq.getDrName(),
-                "appointmentDate", convertToLocalDate(String.valueOf(addSchedulerReq.getApmtDate())) + " " + convertToLocalTime(String.valueOf(addSchedulerReq.getApmtTime())),
+                "appointmentDate", addSchedulerReq.getApmtDate() + " " + addSchedulerReq.getApmtTime(),
                 "appointmentTime", addSchedulerReq.getApmtTime(),
                 "clinicAddress", clinicAddress,
                 "clinicPhone", clinicPhone);
 
         return thymeLeafService.buildApointmentMail(emailParams);
-    }
-
-    public LocalTime convertToLocalTime(String timeString) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
-            Date date = sdf.parse(timeString);
-            return date.toInstant().atZone(POLICY_ZONE).toLocalTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-
-    public LocalDate convertToLocalDate(String dateString) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
-            Date date = sdf.parse(dateString);
-            return date.toInstant().atZone(POLICY_ZONE).toLocalDate();
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
 
