@@ -11,7 +11,7 @@ public class MultiTenantsEntity {
     private String tenantId;
     @JsonProperty("schemaName")
     private String schemaName;
-    @JsonProperty("dburl")
+    @JsonProperty("dbUrl")
     private String dbUrl;
     @JsonProperty("username")
     private String username;

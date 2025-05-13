@@ -1,6 +1,7 @@
 package com.example.schedulerservice.dto.req;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
@@ -36,10 +37,12 @@ public class AddSchedulerReq {
 
     // Date
     @JsonProperty("apmt_date")
-    private Date apmtDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private String apmtDate;
 
     @JsonProperty("apmt_time")
-    private Date apmtTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    private String apmtTime;
 
     @JsonProperty("note")
     private String note;

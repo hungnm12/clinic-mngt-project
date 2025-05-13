@@ -1,24 +1,25 @@
 package com.example.schedulerservice.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Entity
-@Table(name = "patients")
+@Table(name = "scheduler")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class SchedulerEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "scheduler_code")
@@ -43,11 +44,8 @@ public class SchedulerEntity {
     private String orderedSrv;
 
     // Date
-    @Column(name = "apmt_date")
-    private Date apmtDate;
-
-    @Column(name = "apmt_time")
-    private Date apmtTime;
+    @Column(name = "date_apmt")
+    private Date dateApmt;
 
     @Column(name = "note")
     private String note;
