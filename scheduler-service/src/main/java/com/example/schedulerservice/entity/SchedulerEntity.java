@@ -23,29 +23,29 @@ public class SchedulerEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "scheduler_code")
+    @Column(name = "schedulerCode")
     private String schedulerCode;
 
     // Patient
-    @Column(name = "patient_name")
+    @Column(name = "patientName")
     private String patientName;
 
-    @Column(name = "patient_telephone")
+    @Column(name = "patientTelephone")
     private String patientTelephone;
 
-    @Column(name = "patient_email")
+    @Column(name = "patientEmail")
     private String patientEmail;
 
     //Doctor
 
-    @Column(name = "dr_name")
+    @Column(name = "drName")
     private String drName;
 
-    @Column(name = "ordered_srv")
+    @Column(name = "orderedSrv")
     private String orderedSrv;
 
     // Date
-    @Column(name = "date_apmt")
+    @Column(name = "dateApmt")
     private ZonedDateTime dateApmt;
 
     @Column(name = "note")
