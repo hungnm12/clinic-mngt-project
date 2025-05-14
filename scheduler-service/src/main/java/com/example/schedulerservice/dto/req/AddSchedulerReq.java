@@ -18,29 +18,29 @@ import java.util.Date;
 public class AddSchedulerReq {
 
     // Patient
-    @JsonProperty("patient_name")
+    @JsonProperty("patientName")
     private String patientName;
 
-    @JsonProperty("patient_telephone")
+    @JsonProperty("patientTelephone")
     private String patientTelephone;
 
-    @JsonProperty("patient_email")
+    @JsonProperty("patientEmail")
     private String patientEmail;
 
     //Doctor
 
-    @JsonProperty("dr_name")
+    @JsonProperty("drName")
     private String drName;
 
-    @JsonProperty("ordered_srv")
+    @JsonProperty("orderedSrv")
     private String orderedSrv;
 
     // Date
-    @JsonProperty("apmt_date")
+    @JsonProperty("apmtDate")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private String apmtDate;
 
-    @JsonProperty("apmt_time")
+    @JsonProperty("apmtTime")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private String apmtTime;
 

@@ -17,6 +17,10 @@ public class ListStaffSearchReq extends SearchReqDto {
 
     @JsonProperty("role")
     private String role;
+    @JsonProperty("phone")
+    private String phone;
+    @JsonProperty("specialty")
+    private String specialty;
 
     @JsonProperty("email")
     private String email;

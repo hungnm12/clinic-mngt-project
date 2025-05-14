@@ -16,17 +16,21 @@ import java.util.List;
 @AllArgsConstructor
 public class StaffResDto {
 
-    @JsonProperty("last_name")
+    @JsonProperty("lastName")
     private String lastName;
-    @JsonProperty("first_name")
+    @JsonProperty("firstName")
     private String firstName;
     @JsonProperty("age")
     private Integer age;
     @JsonProperty("role")
     private String role;
+    @JsonProperty("phone")
+    private String phone;
+    @JsonProperty("specialty")
+    private String specialty;
     @JsonProperty("email")
     private String email;
-    @JsonProperty("staff_code")
+    @JsonProperty("staffCode")
     private String staffCode;
     @JsonProperty("password")
     private String password;

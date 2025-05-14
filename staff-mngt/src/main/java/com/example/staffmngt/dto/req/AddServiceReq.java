@@ -22,7 +22,8 @@ public class AddServiceReq extends SearchReqDto {
 
     @JsonProperty("service_code")
     private String serviceCode;
-
+    @JsonProperty("note")
+    private String note;
     @JsonProperty("price")
     private double price;
 
