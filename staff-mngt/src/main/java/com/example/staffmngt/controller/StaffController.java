@@ -55,8 +55,45 @@ public class StaffController {
     }
 
     @GetMapping("/all")
-    GeneralResponse getAllStaff() {
+    GeneralResponse getAllStaff(@RequestHeader("X-Tenant-ID") String tenantId) {
+        System.out.println("Received tenant ID: " + tenantId);
+        TenantContext.setTenant(tenantId);
         return staffService.getAllStaff();
+    }
+
+    @GetMapping("/{staffCode}")
+    GeneralResponse getStaffByStaffCode(@PathVariable String staffCode, @RequestHeader("X-Tenant-ID") String tenantId) {
+        System.out.println("Received tenant ID: " + tenantId);
+        TenantContext.setTenant(tenantId);
+        return staffService.getStaff(staffCode);
+    }
+
+    @GetMapping("/getDrBySpecialty")
+    GeneralResponse getDrBySpecialty(@RequestParam String specialty, @RequestHeader("X-Tenant-ID") String tenantId) {
+        System.out.println("Received tenant ID: " + tenantId);
+        TenantContext.setTenant(tenantId);
+        return staffService.getDrBySpecialty(specialty);
+    }
+
+    @GetMapping("/getSpecialtyByDr")
+    GeneralResponse getSpecialtyByDr(@RequestParam String staffCode, @RequestHeader("X-Tenant-ID") String tenantId) {
+        System.out.println("Received tenant ID: " + tenantId);
+        TenantContext.setTenant(tenantId);
+        return staffService.getSpecialtyByDr(staffCode);
+    }
+
+    @GetMapping("/isStaffExist")
+    GeneralResponse isStaffExist(@RequestParam String drName, @RequestHeader("X-Tenant-ID") String tenantId) {
+        System.out.println("Received tenant ID: " + tenantId);
+        TenantContext.setTenant(tenantId);
+        return staffService.isStaffExist(drName);
+    }
+
+    @GetMapping("/isSpecialtyExist")
+    GeneralResponse isSpecialtyExist(@RequestParam String specialty, @RequestHeader("X-Tenant-ID") String tenantId) {
+        System.out.println("Received tenant ID: " + tenantId);
+        TenantContext.setTenant(tenantId);
+        return staffService.isSpecialtyExist(specialty);
     }
 
 

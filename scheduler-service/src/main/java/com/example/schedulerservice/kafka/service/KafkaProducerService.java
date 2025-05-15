@@ -1,6 +1,7 @@
 package com.example.schedulerservice.kafka.service;
 
 
+import com.example.schedulerservice.config.ConfigValue;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -18,6 +19,9 @@ public class KafkaProducerService {
 
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
+
+    @Autowired
+    private ConfigValue configValue;
 
 
     private void sendMsgDefault(String topic, String data, String functionName)
@@ -41,5 +45,10 @@ public class KafkaProducerService {
             log.error("send request failed");
     }
 
+    public void publishScheduler(String msg) throws ExecutionException, InterruptedException, TimeoutException {
+        log.info("[publishScheduler] send credential request {}", msg);
 
+
+        sendMsgDefault(configValue.getAddScheduleTopic(), msg, "[publishScheduler]");
+    }
 }

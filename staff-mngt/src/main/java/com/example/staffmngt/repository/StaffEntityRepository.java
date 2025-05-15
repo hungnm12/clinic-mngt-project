@@ -19,8 +19,15 @@ public interface StaffEntityRepository extends JpaRepository<StaffEntity, Long> 
     StaffEntity findByStaffCode(String staffCode);
 
 
+    @Query("select s from StaffEntity  s where s.firstName like :staffName " +
+            "or s.lastName like :staffName")
+    StaffEntity findByStaffName(String staffName);
+
+
     StaffEntity findByEmail(String email);
 
+
+    List<StaffEntity> getListStaffBySpecialty(String specialty);
 
     @Query("select s from StaffEntity s where (:department is null or s.department = :department) " +
 
@@ -57,7 +64,6 @@ public interface StaffEntityRepository extends JpaRepository<StaffEntity, Long> 
             @Param("phone") String phone,
             @Param("specialty") String specialty,
             Pageable pageable);
-
 
 
 }

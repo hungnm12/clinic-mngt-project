@@ -1,9 +1,11 @@
 package com.example.staffmngt.kafka.service;
 
 
+import com.example.staffmngt.dto.req.AddSchedulerReq;
 import com.example.staffmngt.dto.res.KafkaMsgRes;
 import com.example.staffmngt.dto.res.StaffResDto;
 import com.example.staffmngt.dto.res.UserInfo;
+import com.example.staffmngt.service.Impl.ShiftScheduleServiceImpl;
 import com.example.staffmngt.service.Impl.StaffServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -22,6 +24,8 @@ public class KafkaConsumerService {
 
     @Autowired
     StaffServiceImpl staffService;
+    @Autowired
+    ShiftScheduleServiceImpl shiftScheduleService;
 
 
     @KafkaListener(topics = "${kafka.sub.topic.name-staff-add-acc-res}",
@@ -43,6 +47,24 @@ public class KafkaConsumerService {
         // StaffResDto staffResDto = kafkaMsgRes.getData();
         staffService.processResponseStaffFromQueue(userInfo);
         acknowledgment.acknowledge();
+    }
+
+    @KafkaListener(topics = "${kafka.topic.name-pub-scheduler}", groupId = "clinic-mngt-service-group",
+            containerFactory = "kafkaListenerContainerFactory")
+    public void fetchSchedulerMsg(String event, Acknowledgment acknowledgment,
+                                  @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                                  @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
+                                  @Header(KafkaHeaders.OFFSET) int offsets) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(event);
+        JsonNode dataNode = jsonNode.path("data");
+
+        System.out.println("fetchSchedulerMsg: " + jsonNode.get("data"));
+        AddSchedulerReq addSchedulerReq = objectMapper.treeToValue(dataNode, AddSchedulerReq.class);
+        // StaffResDto staffResDto = kafkaMsgRes.getData();
+        shiftScheduleService.processShiftSchedule(addSchedulerReq);
+        acknowledgment.acknowledge();
+
     }
 }
 

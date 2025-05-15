@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "shift_schedules")
@@ -18,7 +20,6 @@ public class ShiftScheduleEntity {
     @Column(name = "shift_id")
     private Long id;
 
-
     @Column(name = "shift_code")
     private String shiftCode;
 
@@ -26,16 +27,11 @@ public class ShiftScheduleEntity {
     @JoinColumn(name = "staff_id", nullable = false)
     private StaffEntity staff;
 
-    @Column(name = "shift_start", nullable = false)
-    private String shiftStart; // Example: "08:00 AM"
+    @Column(name = "booked_patient")
+    private String bookedPatient;
 
-    @Column(name = "shift_end", nullable = false)
-    private String shiftEnd; // Example: "04:00 PM"
-
-    @Column(name = "day_of_week", nullable = false)
-    private String dayOfWeek; // Monday, Tuesday, etc.
 
     @Column(name = "booked_time")
-    private Date bookedTime;
+    private ZonedDateTime bookedTime;
 
 }

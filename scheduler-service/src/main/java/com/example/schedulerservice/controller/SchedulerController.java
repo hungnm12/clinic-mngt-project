@@ -6,6 +6,7 @@ import com.example.schedulerservice.dto.MultiTenantsEntity;
 import com.example.schedulerservice.dto.req.AddSchedulerReq;
 import com.example.schedulerservice.dto.req.MailInfoReqDto;
 import com.example.schedulerservice.dto.res.GeneralResponse;
+import com.example.schedulerservice.feign.StaffFeignClient;
 import com.example.schedulerservice.feign.TenantFeignClient;
 import com.example.schedulerservice.service.Impl.ThymeLeafServiceImpl;
 import com.example.schedulerservice.service.MailService;
@@ -19,6 +20,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 @RestController
 @RequestMapping("/scheduler")
@@ -29,21 +32,30 @@ public class SchedulerController {
     private final ThymeLeafServiceImpl thymeLeafService;
     private final TenantFeignClient tenantFeignClient;
     private final MailService mailService;
+    private final StaffFeignClient staffFeignClient;
 
-    public SchedulerController(SchedulerService schedulerService, ThymeLeafServiceImpl thymeLeafService, TenantFeignClient tenantFeignClient, MailService mailService) {
+    public SchedulerController(SchedulerService schedulerService, ThymeLeafServiceImpl thymeLeafService, TenantFeignClient tenantFeignClient, MailService mailService, StaffFeignClient staffFeignClient) {
         this.schedulerService = schedulerService;
         this.thymeLeafService = thymeLeafService;
         this.tenantFeignClient = tenantFeignClient;
         this.mailService = mailService;
+        this.staffFeignClient = staffFeignClient;
     }
 
 
     @PostMapping("/addScheduler")
-    GeneralResponse addScheduler(@RequestBody AddSchedulerReq addSchedulerReq, @RequestHeader("X-Tenant-ID") String tenantId) throws ParseException {
+    GeneralResponse addScheduler(@RequestBody AddSchedulerReq addSchedulerReq, @RequestHeader("X-Tenant-ID") String tenantId) throws ParseException, ExecutionException, InterruptedException, TimeoutException {
         TenantContext.setTenant(tenantId);
         MultiTenantsEntity m = tenantFeignClient.getTenant(tenantId);
         String clinicAddress = m.getAddress();
         String clinicPhone = m.getPhone();
+
+        GeneralResponse g1 = staffFeignClient.isStaffExist(addSchedulerReq.getDrName(), tenantId);
+
+        if (g1.getData().equals(Boolean.FALSE)) {
+            return null;
+        }
+
 
         // Call the scheduler service first and check response
         GeneralResponse response = schedulerService.addScheduler(addSchedulerReq);

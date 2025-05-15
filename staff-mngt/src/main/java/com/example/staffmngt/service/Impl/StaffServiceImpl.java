@@ -224,7 +224,7 @@ public class StaffServiceImpl implements StaffService {
 
 
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<StaffResDto> StaffResDtoPage = staffEntityRepository.getListOfStaff(staffSearchReq.getLastName(), staffSearchReq.getFirstName(), staffSearchReq.getEmail(), staffSearchReq.getStaffCode(), staffSearchReq.getRole(),staffSearchReq.getPhone(),staffSearchReq.getSpecialty(), pageable);
+        Page<StaffResDto> StaffResDtoPage = staffEntityRepository.getListOfStaff(staffSearchReq.getLastName(), staffSearchReq.getFirstName(), staffSearchReq.getEmail(), staffSearchReq.getStaffCode(), staffSearchReq.getRole(), staffSearchReq.getPhone(), staffSearchReq.getSpecialty(), pageable);
         return new GeneralResponse(org.apache.http.HttpStatus.SC_OK, "", "service list", new ListContentPageDto<>(StaffResDtoPage, StaffResDtoPage.getContent()));
     }
 
@@ -252,16 +252,59 @@ public class StaffServiceImpl implements StaffService {
         if (specialty == null) {
             return new GeneralResponse(HttpStatus.NO_CONTENT.value(), "", "Staff object is null, cannot proceed.", null);
         }
-//        //lay dsach bsi thuoc chuyen mon
-//        List<StaffEntity> lst = staffEntityRepository.findAllBySpecialty(specialty);
+        //lay dsach bsi thuoc chuyen mon
+        List<StaffEntity> lst = staffEntityRepository.getListStaffBySpecialty(specialty);
 
-
-        return null;
+        return new GeneralResponse(HttpStatus.OK.value(), "", "Staff searched", lst);
     }
 
     @Override
     public GeneralResponse getSpecialtyByDr(String staffCode) {
-        return null;
+        StaffEntity staffEntity = staffEntityRepository.findByStaffCode(staffCode);
+        if (staffEntity == null) {
+            return new GeneralResponse(HttpStatus.NO_CONTENT.value(), "", "Staff object is null, cannot proceed.", null);
+        }
+
+        String spcialty = staffEntity.getSpecialty();
+
+        assert spcialty != null;
+
+        return new GeneralResponse(HttpStatus.OK.value(), "", "Staff found", spcialty);
+    }
+
+    @Override
+    public GeneralResponse isStaffExist(String staffCode) {
+        boolean a = false;
+        if (staffCode == null) {
+            return new GeneralResponse(HttpStatus.OK.value(), "", "", a);
+        }
+        if (!StringUtil.isNullOrEmpty(staffCode)) {
+            return new GeneralResponse(HttpStatus.OK.value(), "", "", a);
+        }
+        if (staffEntityRepository.findByStaffName(staffCode) == null) {
+            return new GeneralResponse(HttpStatus.OK.value(), "", "", a);
+        } else {
+            a = true;
+            return new GeneralResponse(HttpStatus.OK.value(), "", "staff found", a);
+        }
+
+    }
+
+    @Override
+    public GeneralResponse isSpecialtyExist(String specialty) {
+        boolean a = false;
+
+        if (specialty == null) {
+            return new GeneralResponse(HttpStatus.OK.value(), "", "", a);
+        }
+        List<StaffEntity> staff = staffEntityRepository.getListStaffBySpecialty(specialty);
+        if (staff == null) {
+            return new GeneralResponse(HttpStatus.OK.value(), "", "", a);
+        } else {
+            a = true;
+            return new GeneralResponse(HttpStatus.OK.value(), "", "Staff found", a);
+        }
+
     }
 
     private boolean isValidEmail(String email) {

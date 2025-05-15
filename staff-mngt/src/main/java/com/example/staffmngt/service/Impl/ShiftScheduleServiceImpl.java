@@ -1,22 +1,31 @@
 package com.example.staffmngt.service.Impl;
 
 
+import com.example.staffmngt.dto.req.AddSchedulerReq;
 import com.example.staffmngt.dto.req.AddShiftReq;
+import com.example.staffmngt.dto.res.BookedPatientDto;
 import com.example.staffmngt.entity.ShiftScheduleEntity;
 import com.example.staffmngt.entity.StaffEntity;
 import com.example.staffmngt.repository.ShiftRepository;
 import com.example.staffmngt.repository.StaffEntityRepository;
 import com.example.staffmngt.service.ShiftScheduleService;
+import com.example.staffmngt.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.staffmngt.dto.res.GeneralResponse;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 @Service
 @Slf4j
 public class ShiftScheduleServiceImpl implements ShiftScheduleService {
+    private static final ZoneId POLICY_ZONE = ZoneId.of("Asia/Ho_Chi_Minh");
 
     @Autowired
     private ShiftRepository shiftRepository;
@@ -44,9 +53,7 @@ public class ShiftScheduleServiceImpl implements ShiftScheduleService {
         ShiftScheduleEntity shiftScheduleEntity = new ShiftScheduleEntity();
         shiftScheduleEntity.setShiftCode(shiftSchedule.getShiftCode());
         shiftScheduleEntity.setStaff(staffEntity);
-        shiftScheduleEntity.setShiftEnd(shiftSchedule.getShiftEnd());
-        shiftScheduleEntity.setShiftStart(shiftSchedule.getShiftStart());
-        shiftScheduleEntity.setDayOfWeek(shiftSchedule.getDayOfWeek());
+        shiftScheduleEntity.setBookedPatient(shiftSchedule.getBookedPatient());
         shiftScheduleEntity.setBookedTime(shiftSchedule.getBookedTime());
         shiftRepository.save(shiftScheduleEntity);
 
@@ -67,9 +74,7 @@ public class ShiftScheduleServiceImpl implements ShiftScheduleService {
         if (existingShiftSchedule == null) {
             return new GeneralResponse(HttpStatus.SC_BAD_REQUEST, "", "shift not found", null);
         }
-        existingShiftSchedule.setShiftEnd(shiftSchedule.getShiftEnd());
-        existingShiftSchedule.setShiftStart(shiftSchedule.getShiftStart());
-        existingShiftSchedule.setDayOfWeek(shiftSchedule.getDayOfWeek());
+
         existingShiftSchedule.setBookedTime(shiftSchedule.getBookedTime());
         existingShiftSchedule.setStaff(staffEntity);
 
@@ -86,5 +91,40 @@ public class ShiftScheduleServiceImpl implements ShiftScheduleService {
         ShiftScheduleEntity shiftScheduleEntity = shiftRepository.findShiftScheduleByShiftCode(shiftCode);
         shiftRepository.delete(shiftScheduleEntity);
         return new GeneralResponse(HttpStatus.SC_OK, "", "delete", null);
+    }
+
+    public void processShiftSchedule(AddSchedulerReq addSchedulerReq) {
+        StaffEntity staffEntity = staffEntityRepository.findByStaffName(addSchedulerReq.getDrName());
+        if (staffEntity == null) {
+            return;
+        }
+
+        BookedPatientDto bookedPatientDto = new BookedPatientDto();
+        bookedPatientDto.setPatientEmail(addSchedulerReq.getPatientEmail());
+        bookedPatientDto.setPatientName(addSchedulerReq.getPatientName());
+        bookedPatientDto.setPatientTelephone(addSchedulerReq.getPatientTelephone());
+        String bookedPatient = JsonUtils.marshalJsonAsPrettyString(bookedPatientDto);
+        AddShiftReq addShiftReq = new AddShiftReq();
+        addShiftReq.setShiftCode(addSchedulerReq.getOrderedSrv());
+        addShiftReq.setStaffCode(staffEntity.getStaffCode());
+        addShiftReq.setBookedPatient(bookedPatient);
+        addShiftReq.setBookedTime(convertToZonedDateTime(addSchedulerReq.getApmtDate().toString(), addSchedulerReq.getApmtTime().toString()));
+
+        createShift(addShiftReq);
+    }
+
+    private ZonedDateTime convertToZonedDateTime(String date, String time) {
+        log.info("date: {}, time: {}", date, time);
+        String dateTimeString = date + " " + time; // e.g., "2025-05-15 10:30:00"
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime localDateTime = LocalDateTime.parse(dateTimeString, formatter);
+
+        // Set time zone to Asia/Bangkok (ICT)
+
+        ZonedDateTime zonedDateTime = localDateTime.atZone(POLICY_ZONE);
+
+        log.info("Parsed ZonedDateTime: {}", zonedDateTime);
+        return zonedDateTime;
     }
 }
