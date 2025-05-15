@@ -26,7 +26,6 @@ public class AddServiceReq extends SearchReqDto {
     private String note;
     @JsonProperty("price")
     private double price;
-
     @JsonProperty("department")
     private String department;
 }

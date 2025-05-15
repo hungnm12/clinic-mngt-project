@@ -21,13 +21,16 @@ public interface ServiceRepository extends JpaRepository<ServiceEntity, Long> {
     @Query(value = "select new com.example.staffmngt.dto.res.ServiceResDto(" +
             "l.serviceName, " +
             "l.serviceCode, " +
-            "l.price) " +
+            "l.price, " +
+            "l.note)"+
             "from ServiceEntity l " +
             "where (:serviceName is null or :serviceName = '' or l.serviceName like %:serviceName%) " +
-            "and (:serviceCode is null or :serviceCode = '' or l.serviceCode like %:serviceCode%)")
+            "and (:serviceCode is null or :serviceCode = '' or l.serviceCode like %:serviceCode%)" +
+            "and (:note is null or :note = '' or l.serviceCode like %:note%)")
     Page<ServiceResDto> getListOfServices(
             @Param("serviceName") String serviceName,
             @Param("serviceCode") String serviceCode,
+            @Param("note") String note,
             Pageable pageable);
 
 

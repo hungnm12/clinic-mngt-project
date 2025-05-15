@@ -20,7 +20,8 @@ public class ServiceResDto {
 
     @JsonProperty("price")
     private double price;
-
+    @JsonProperty("note")
+    private String note;
 //    @JsonProperty("department")
 //    private DepartmentEntity department;
 }

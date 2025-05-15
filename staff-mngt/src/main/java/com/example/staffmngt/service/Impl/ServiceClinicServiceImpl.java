@@ -148,7 +148,7 @@ public class ServiceClinicServiceImpl implements ServiceClinicService {
 
 
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<ServiceResDto> ServiceResDtoPage = serviceRepository.getListOfServices(addServiceReq.getServiceCode(), addServiceReq.getServiceName(), pageable);
+        Page<ServiceResDto> ServiceResDtoPage = serviceRepository.getListOfServices(addServiceReq.getServiceCode(), addServiceReq.getServiceName(),addServiceReq.getNote(), pageable);
         return new GeneralResponse(HttpStatus.SC_OK, "", "service list", new ListContentPageDto<>(ServiceResDtoPage, ServiceResDtoPage.getContent()));
 
     }
