@@ -3,6 +3,7 @@ package com.example.staffmngt.controller;
 
 import com.example.staffmngt.configuration.TenantContext;
 import com.example.staffmngt.dto.req.AddRecordReq;
+import com.example.staffmngt.dto.req.SearchRecReq;
 import com.example.staffmngt.dto.res.GeneralResponse;
 import com.example.staffmngt.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,5 +20,11 @@ public class RecordController {
     public GeneralResponse addRecord(@RequestBody AddRecordReq addRecordReq, @RequestHeader("X-Tenant-ID") String tenantId) {
         TenantContext.setTenant(tenantId);
         return recordService.addRecord(addRecordReq);
+    }
+
+    @PostMapping("/getRec")
+    public GeneralResponse getListRec(@RequestBody SearchRecReq searchRecReq, @RequestHeader("X-Tenant-ID") String tenantId) {
+        TenantContext.setTenant(tenantId);
+        return recordService.getListRec(searchRecReq);
     }
 }
