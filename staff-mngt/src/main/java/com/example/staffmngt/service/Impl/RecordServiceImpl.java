@@ -30,7 +30,7 @@ public class RecordServiceImpl implements RecordService {
         if (addRecordReq.getPatientName() == null || addRecordReq.getPatientName().isEmpty()) {
             return new GeneralResponse(HttpStatus.NO_CONTENT.value(), "", "", null);
         }
-        StaffEntity staffEntity = staffEntityRepository.findByStaffName(addRecordReq.getInchargedDr());
+        StaffEntity staffEntity = staffEntityRepository.findByFullName(addRecordReq.getStaffName());
         if (staffEntity == null) {
             return new GeneralResponse(HttpStatus.NO_CONTENT.value(), "", "", null);
         }
@@ -43,11 +43,12 @@ public class RecordServiceImpl implements RecordService {
         recordEntity.setDepartment(dpm);
         recordEntity.setAssumption(addRecordReq.getAssumption());
         recordEntity.setPatientName(addRecordReq.getPatientName());
-        recordEntity.setInchargedDr(addRecordReq.getInchargedDr());
+        recordEntity.setStaffName(addRecordReq.getStaffName());
         recordEntity.setNote(addRecordReq.getNote());
         recordEntity.setDiagnose(addRecordReq.getDiagnose());
         recordEntity.setPatientEmail(addRecordReq.getPatientEmail());
         recordEntity.setServiceType(addRecordReq.getServiceType());
+        recordEntity.setSymptom(addRecordReq.getSymptom());
         recordEntity.setPatientDob(addRecordReq.getPatientDob());
         recordEntity.setStaffCode(staffEntity.getStaffCode());
         recordEntity.setPatientPhone(addRecordReq.getPatientPhone());

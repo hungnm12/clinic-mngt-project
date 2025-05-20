@@ -2,6 +2,8 @@ package com.example.accountservice.filter;
 
 
 import com.example.accountservice.config.JwtService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,7 +38,28 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
-            username = jwtService.extractUsername(token);
+            try {
+                username = jwtService.extractUsername(token);
+            } catch (io.jsonwebtoken.security.WeakKeyException e) {
+                // Log lỗi và trả về lỗi cho client.  Quan trọng: Không tiếp tục xử lý token không an toàn.
+                logger.error("Lỗi khóa JWT không an toàn: " + e.getMessage());
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // Hoặc một mã lỗi phù hợp
+                response.getWriter().write("Lỗi: Khóa JWT không an toàn. Vui lòng kiểm tra cấu hình.");
+                return; // Dừng xử lý request ở đây!
+            } catch (ExpiredJwtException e) {
+                // Handle expired token
+                logger.warn("Token đã hết hạn: " + e.getMessage());
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token đã hết hạn.");
+                return;
+            } catch (JwtException e) {
+                // Handle other JWT exceptions (e.g., invalid signature)
+                logger.error("Lỗi JWT: " + e.getMessage());
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token không hợp lệ.");
+                return;
+            }
+
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

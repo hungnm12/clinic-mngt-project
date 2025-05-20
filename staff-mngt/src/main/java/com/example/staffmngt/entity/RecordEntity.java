@@ -21,19 +21,19 @@ public class RecordEntity {
     private Long id;
 
     //patient
-    @Column(name = "patient_name")
+    @Column(name = "patientName")
     private String patientName;
 
-    @Column(name = "patient_phone")
+    @Column(name = "patientPhone")
     private String patientPhone;
 
-    @Column(name = "patient_dob")
+    @Column(name = "patientDob")
     private String patientDob;
 
-    @Column(name = "patient_email")
+    @Column(name = "patientEmail")
     private String patientEmail;
 
-    @Column(name = "service_type")
+    @Column(name = "serviceType")
     private String serviceType;
 
     @Column(name = "diagnose")
@@ -55,7 +55,7 @@ public class RecordEntity {
     @Column(name = "staffCode")
     private String staffCode;
 
-    @Column(name = "incharged_dr")
-    private String inchargedDr;
+    @Column(name = "staffName")
+    private String staffName;
 
 }
