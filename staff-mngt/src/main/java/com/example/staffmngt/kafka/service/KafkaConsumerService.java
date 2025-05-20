@@ -55,13 +55,9 @@ public class KafkaConsumerService {
                                   @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                                   @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
                                   @Header(KafkaHeaders.OFFSET) int offsets) throws JsonProcessingException {
+        log.info("evernt {}", event);
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(event);
-        JsonNode dataNode = jsonNode.path("data");
-
-        System.out.println("fetchSchedulerMsg: " + jsonNode.get("data"));
-        AddSchedulerReq addSchedulerReq = objectMapper.treeToValue(dataNode, AddSchedulerReq.class);
-        // StaffResDto staffResDto = kafkaMsgRes.getData();
+        AddSchedulerReq addSchedulerReq = objectMapper.readValue(event, AddSchedulerReq.class);
         shiftScheduleService.processShiftSchedule(addSchedulerReq);
         acknowledgment.acknowledge();
 

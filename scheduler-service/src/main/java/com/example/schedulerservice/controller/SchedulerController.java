@@ -50,11 +50,11 @@ public class SchedulerController {
         String clinicAddress = m.getAddress();
         String clinicPhone = m.getPhone();
 
-        GeneralResponse g1 = staffFeignClient.isStaffExist(addSchedulerReq.getDrName(), tenantId);
-
-        if (g1.getData().equals(Boolean.FALSE)) {
-            return null;
-        }
+//        GeneralResponse g1 = staffFeignClient.isStaffExist(addSchedulerReq.getDrName(), tenantId);
+//
+//        if (g1.getData().equals(Boolean.FALSE)) {
+//            return null;
+//        }
 
 
         // Call the scheduler service first and check response
