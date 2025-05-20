@@ -19,10 +19,14 @@ public interface StaffEntityRepository extends JpaRepository<StaffEntity, Long> 
     StaffEntity findByStaffCode(String staffCode);
 
 
-    @Query("select s from StaffEntity  s where s.firstName like :staffName " +
-            "or s.lastName like :staffName")
+    @Query("select s from StaffEntity  s where s.firstName like %:staffName% " +
+            "or s.lastName like %:staffName%")
     StaffEntity findByStaffName(String staffName);
-
+    @Query("select s from StaffEntity s where " +
+            "CONCAT(s.firstName, ' ', s.lastName) like %:fullName% " +
+            "or s.firstName like %:fullName% " +
+            "or s.lastName like %:fullName%")
+    StaffEntity findByFullName(String fullName);
 
     StaffEntity findByEmail(String email);
 

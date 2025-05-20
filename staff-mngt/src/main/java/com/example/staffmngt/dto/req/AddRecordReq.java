@@ -15,19 +15,19 @@ import lombok.NoArgsConstructor;
 public class AddRecordReq {
 
 
-    @JsonProperty("patient_name")
+    @JsonProperty("patientName")
     private String patientName;
 
-    @JsonProperty("patient_phone")
+    @JsonProperty("patientPhone")
     private String patientPhone;
 
-    @JsonProperty("patient_dob")
+    @JsonProperty("patientDob")
     private String patientDob;
 
-    @JsonProperty("patient_email")
+    @JsonProperty("patientEmail")
     private String patientEmail;
 
-    @JsonProperty("service_type")
+    @JsonProperty("serviceType")
     private String serviceType;
 
     @JsonProperty("diagnose")
@@ -46,6 +46,6 @@ public class AddRecordReq {
     private String department;
 
 
-    @JsonProperty("incharged_dr")
-    private String inchargedDr;
+    @JsonProperty("staffName")
+    private String staffName;
 }
