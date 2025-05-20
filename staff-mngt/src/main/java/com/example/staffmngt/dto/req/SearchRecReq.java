@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class SearchRecReq extends SearchReqDto {
     @JsonProperty("staffCode")
     String staffCode;
-    @JsonProperty("inchargedDr")
-    String inChargedDr;
+    @JsonProperty("staffName")
+    String staffName;
 }

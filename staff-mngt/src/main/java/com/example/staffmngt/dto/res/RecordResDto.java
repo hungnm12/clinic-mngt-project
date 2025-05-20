@@ -45,6 +45,6 @@ public class RecordResDto {
     @JsonProperty("staffCode")
     private String staffCode;
 
-    @JsonProperty("incharged_dr")
-    private String inchargedDr;
+    @JsonProperty("staffName")
+    private String staffName;
 }

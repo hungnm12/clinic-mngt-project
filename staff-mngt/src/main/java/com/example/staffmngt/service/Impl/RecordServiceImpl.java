@@ -93,7 +93,7 @@ public class RecordServiceImpl implements RecordService {
 
 
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<RecordResDto> recordResDtos = recordRepository.getListRrc(searchRecReq.getStaffCode(), searchRecReq.getInChargedDr(), pageable);
+        Page<RecordResDto> recordResDtos = recordRepository.getListRrc(searchRecReq.getStaffCode(), searchRecReq.getStaffName(), pageable);
         return new GeneralResponse(org.apache.http.HttpStatus.SC_OK, "", "service list", new ListContentPageDto<>(recordResDtos, recordResDtos.getContent()));
     }
 }

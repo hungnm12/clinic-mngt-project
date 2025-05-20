@@ -23,12 +23,12 @@ public interface RecordRepository extends JpaRepository<RecordEntity, Long> {
             "l.assign," +
             "l.note," +
             "l.staffCode," +
-            "l.inchargedDr)" +
+            "l.staffName)" +
             "from RecordEntity l " +
             "where ( l.staffCode = :staffCode) " +
-            "and (:inchargedDr is null or :inchargedDr = '' or l.inchargedDr like %:inchargedDr%)")
+            "and (:staffName is null or :staffName = '' or l.staffName like %:staffName%)")
     Page<RecordResDto> getListRrc(
             @Param("staffCode") String staffCode,
-            @Param("inchargedDr") String inchargedDr,
+            @Param("staffName") String staffName,
             Pageable pageable);
 }
