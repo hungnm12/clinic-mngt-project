@@ -8,6 +8,9 @@ import com.example.accountservice.entity.UserInfo;
 import com.example.accountservice.kafka.service.KafkaProducerService;
 import com.example.accountservice.repository.UserInfoRepository;
 import com.example.accountservice.utils.ConvertUtils;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +21,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
 @Service
 @Primary
 public class UserInfoService implements UserDetailsService {
+
+    @Value("${secret.key.auth}")
+    String secret;
+
     @Autowired
     private UserInfoRepository repository;
 
@@ -64,5 +72,6 @@ public class UserInfoService implements UserDetailsService {
 
         return new GeneralResponse(HttpStatus.SC_OK, "", "User Added Successfully", userInfo);
     }
+
 
 }

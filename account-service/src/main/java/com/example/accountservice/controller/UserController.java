@@ -7,6 +7,7 @@ import com.example.accountservice.dto.res.GeneralResponse;
 import com.example.accountservice.entity.UserInfo;
 import com.example.accountservice.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -55,4 +56,17 @@ public class UserController {
             throw new UsernameNotFoundException("Invalid user request!");
         }
     }
+
+    @GetMapping("/validate")
+    public ResponseEntity<Boolean> validateToken(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader("X-Tenant-ID") String tenantId) {
+
+        TenantContext.setTenant(tenantId);
+        String token = authHeader.replace("Bearer ", "");
+        boolean isValid = jwtService.validateToken(token);
+        return ResponseEntity.ok(isValid);
+    }
+
+
 }

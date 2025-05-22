@@ -9,4 +9,7 @@ import org.springframework.stereotype.Repository;
 public interface ShiftRepository extends JpaRepository<ShiftScheduleEntity, Long> {
 
     ShiftScheduleEntity findShiftScheduleByShiftCode(String shiftCode);
+
+    ShiftScheduleEntity findShiftScheduleByStaffCode(String staffCode);
+
 }
