@@ -7,8 +7,10 @@ import com.example.staffmngt.dto.req.ListStaffSearchReq;
 import com.example.staffmngt.dto.req.StaffReqDto;
 import com.example.staffmngt.dto.req.UpdReqDto;
 import com.example.staffmngt.dto.res.GeneralResponse;
+import com.example.staffmngt.dto.res.StatsRes;
 import com.example.staffmngt.entity.StaffEntity;
 import com.example.staffmngt.feign.AccFeignClient;
+import com.example.staffmngt.repository.ShiftRepository;
 import com.example.staffmngt.repository.StaffEntityRepository;
 import com.example.staffmngt.service.ShiftScheduleService;
 import io.jsonwebtoken.Claims;
@@ -20,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Key;
+import java.util.List;
 import java.util.function.Function;
 
 @RestController
@@ -34,6 +37,8 @@ public class ShiftController {
 
     @Autowired
     private StaffEntityRepository staffEntityRepository;
+    @Autowired
+    private ShiftRepository shiftRepository;
 
     @DeleteMapping("/delete")
     GeneralResponse deleteStaff(@RequestParam String shiftCode, @RequestHeader("X-Tenant-ID") String tenantId) {
@@ -99,5 +104,10 @@ public class ShiftController {
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    @GetMapping("/stats")
+    private List<StatsRes> stats() {
+        return shiftRepository.countShiftsByDate();
     }
 }

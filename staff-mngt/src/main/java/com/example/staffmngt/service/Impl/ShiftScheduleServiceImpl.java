@@ -34,6 +34,7 @@ public class ShiftScheduleServiceImpl implements ShiftScheduleService {
     private StaffEntityRepository staffEntityRepository;
 
 
+
     @Override
     public GeneralResponse getAllShifts(String staffCode) {
         if (staffCode == null || staffCode.isEmpty()) {
@@ -62,7 +63,8 @@ public class ShiftScheduleServiceImpl implements ShiftScheduleService {
         shiftRepository.save(shiftScheduleEntity);
 
 
-        return null;
+
+        return new GeneralResponse(HttpStatus.SC_CREATED, "", "shift created", null);
     }
 
     @Override
