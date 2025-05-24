@@ -5,6 +5,7 @@ import com.example.accountservice.config.TenantContext;
 import com.example.accountservice.dto.req.AuthRequest;
 import com.example.accountservice.dto.res.GeneralResponse;
 import com.example.accountservice.entity.UserInfo;
+import com.example.accountservice.repository.UserInfoRepository;
 import com.example.accountservice.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/auth")
 public class UserController {
@@ -22,11 +25,13 @@ public class UserController {
     private final UserInfoService service;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final UserInfoRepository userInfoRepository;
 
-    public UserController(@Qualifier("userInfoService") UserInfoService service, JwtService jwtService, AuthenticationManager authenticationManager) {
+    public UserController(@Qualifier("userInfoService") UserInfoService service, JwtService jwtService, AuthenticationManager authenticationManager, UserInfoRepository userInfoRepository) {
         this.service = service;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.userInfoRepository = userInfoRepository;
     }
 
     @GetMapping("/welcome")
@@ -44,14 +49,16 @@ public class UserController {
     }
 
     @PostMapping("/generateToken")
-    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest, @RequestHeader("X-Tenant-ID") String tenantId) {
+    public TokenDto authenticateAndGetToken(@RequestBody AuthRequest authRequest, @RequestHeader("X-Tenant-ID") String tenantId) {
         TenantContext.setTenant(tenantId);
-
+        Optional<UserInfo> uio = userInfoRepository.findByEmail(authRequest.getUsername());
+        String role = uio.map(UserInfo::getRoles).orElse(null);
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
         );
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(authRequest.getUsername());
+            return new TokenDto(jwtService.generateToken(authRequest.getUsername()), role);
+
         } else {
             throw new UsernameNotFoundException("Invalid user request!");
         }
@@ -68,5 +75,34 @@ public class UserController {
         return ResponseEntity.ok(isValid);
     }
 
+
+    private class TokenDto {
+        private String token;
+        private String role;
+
+        public TokenDto(String token, String role) {
+            this.token = token;
+            this.role = role;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+        }
+
+        public String getRole() {
+            return role;
+        }
+
+        public void setRole(String role) {
+            this.role = role;
+        }
+
+
+        public TokenDto() {
+        }
+    }
 
 }
