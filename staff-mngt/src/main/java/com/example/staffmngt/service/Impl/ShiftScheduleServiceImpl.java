@@ -42,7 +42,7 @@ public class ShiftScheduleServiceImpl implements ShiftScheduleService {
             return new GeneralResponse(HttpStatus.SC_BAD_REQUEST, "", "staff code not found", null);
         }
 
-        return new GeneralResponse(HttpStatus.SC_OK, "", "list fetched", shiftRepository.findShiftScheduleByStaffCode(staffCode));
+        return new GeneralResponse(HttpStatus.SC_OK, "", "list fetched", shiftRepository.findShiftScheduleByShiftCode(staffCode));
     }
 
     @Override

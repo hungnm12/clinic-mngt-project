@@ -7,7 +7,7 @@ import com.example.staffmngt.dto.req.ListStaffSearchReq;
 import com.example.staffmngt.dto.req.StaffReqDto;
 import com.example.staffmngt.dto.req.UpdReqDto;
 import com.example.staffmngt.dto.res.GeneralResponse;
-import com.example.staffmngt.dto.res.StatsRes;
+
 import com.example.staffmngt.entity.StaffEntity;
 import com.example.staffmngt.feign.AccFeignClient;
 import com.example.staffmngt.repository.ShiftRepository;
@@ -107,7 +107,7 @@ public class ShiftController {
     }
 
     @GetMapping("/stats")
-    private List<StatsRes> stats() {
+    private List<Object[]> stats() {
         return shiftRepository.countShiftsByDate();
     }
 }
