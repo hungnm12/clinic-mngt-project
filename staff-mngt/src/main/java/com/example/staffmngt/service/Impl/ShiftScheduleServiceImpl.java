@@ -35,9 +35,14 @@ public class ShiftScheduleServiceImpl implements ShiftScheduleService {
     private StaffEntityRepository staffEntityRepository;
 
 
+
     @Override
-    public GeneralResponse getAllShifts() {
-        return new GeneralResponse(HttpStatus.SC_OK, "", "list fetched", shiftRepository.findAll());
+    public GeneralResponse getAllShifts(String staffCode) {
+        if (staffCode == null || staffCode.isEmpty()) {
+            return new GeneralResponse(HttpStatus.SC_BAD_REQUEST, "", "staff code not found", null);
+        }
+
+        return new GeneralResponse(HttpStatus.SC_OK, "", "list fetched", shiftRepository.findShiftScheduleByStaffCode(staffCode));
     }
 
     @Override
@@ -59,7 +64,8 @@ public class ShiftScheduleServiceImpl implements ShiftScheduleService {
         shiftRepository.save(shiftScheduleEntity);
 
 
-        return null;
+
+        return new GeneralResponse(HttpStatus.SC_CREATED, "", "shift created", null);
     }
 
     @Override
