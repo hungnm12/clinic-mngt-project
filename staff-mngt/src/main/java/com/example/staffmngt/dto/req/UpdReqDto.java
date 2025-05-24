@@ -1,9 +1,13 @@
 package com.example.staffmngt.dto.req;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UpdReqDto {
     @JsonProperty("lastName")
     private String lastName;
@@ -27,7 +31,7 @@ public class UpdReqDto {
 
     @JsonProperty("department")
     private String department;
-    @JsonProperty("staff_code")
+    @JsonProperty("staffcode")
     private String staffCode;
 
 }

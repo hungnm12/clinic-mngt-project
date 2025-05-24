@@ -10,6 +10,7 @@ import com.example.staffmngt.repository.ShiftRepository;
 import com.example.staffmngt.repository.StaffEntityRepository;
 import com.example.staffmngt.service.ShiftScheduleService;
 import com.example.staffmngt.utils.JsonUtils;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +95,7 @@ public class ShiftScheduleServiceImpl implements ShiftScheduleService {
     }
 
     public void processShiftSchedule(AddSchedulerReq addSchedulerReq) {
-        StaffEntity staffEntity = staffEntityRepository.findByStaffName(addSchedulerReq.getDrName());
+        StaffEntity staffEntity = staffEntityRepository.findByFullName(addSchedulerReq.getDrName());
         if (staffEntity == null) {
             return;
         }

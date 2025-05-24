@@ -127,9 +127,6 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public GeneralResponse updateStaff(UpdReqDto staff) {
-        if (staff == null) {
-            return new GeneralResponse(HttpStatus.NO_CONTENT.value(), "", "Staff object is null, cannot proceed.", null);
-        }
         String tenantId = TenantContext.getTenant();
         if (tenantId == null) {
             log.info("[updateStaff] tenantId = null", tenantId);
