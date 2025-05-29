@@ -40,6 +40,8 @@ public class AddSchedulerServiceImpl implements SchedulerService {
     public GeneralResponse addScheduler(AddSchedulerReq addSchedulerReq) throws ParseException, ExecutionException, InterruptedException, TimeoutException {
 
         String orderCode = "Order_" + "_" + addSchedulerReq.getOrderedSrv() + new Random().nextInt(100);
+        addSchedulerReq.setSchedulerCode(orderCode);
+        log.info("orderCode: {}", orderCode);
         if (schedulerRepository.existsBySchedulerCode(orderCode)) {
             return new GeneralResponse(HttpStatus.SC_CONFLICT, "", "Order cdode already exists!", null);
         }
@@ -53,6 +55,7 @@ public class AddSchedulerServiceImpl implements SchedulerService {
                 .patientName(addSchedulerReq.getPatientName())
                 .patientTelephone(addSchedulerReq.getPatientTelephone())
                 .orderedSrv(addSchedulerReq.getOrderedSrv())
+                .status(addSchedulerReq.getStatus())
                 .build();
 
         String msg = JsonUtils.marshalJsonAsPrettyString(addSchedulerReq);

@@ -51,4 +51,7 @@ public class SchedulerEntity {
     @Column(name = "note")
     private String note;
 
+    @Column(name = "status")
+    private String status;
+
 }

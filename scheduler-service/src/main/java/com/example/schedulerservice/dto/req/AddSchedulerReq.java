@@ -46,4 +46,13 @@ public class AddSchedulerReq {
 
     @JsonProperty("note")
     private String note;
+
+    @JsonProperty("status")
+    private String status;
+
+    @JsonProperty("schedulerCode")
+    private String schedulerCode;
+
+//    @JsonProperty("serviceName")
+//    private String serviceName;
 }

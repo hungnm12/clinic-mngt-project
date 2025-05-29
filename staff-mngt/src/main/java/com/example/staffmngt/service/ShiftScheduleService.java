@@ -7,7 +7,7 @@ import com.example.staffmngt.entity.ShiftScheduleEntity;
 public interface ShiftScheduleService {
 
 
-    GeneralResponse getAllShifts(String staffCode);
+    GeneralResponse getAllShifts(Long id);
 
     GeneralResponse createShift(AddShiftReq addShiftReq);
 

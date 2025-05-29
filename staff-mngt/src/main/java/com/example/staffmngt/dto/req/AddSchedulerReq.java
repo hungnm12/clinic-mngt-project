@@ -31,7 +31,8 @@ public class AddSchedulerReq {
 
     @JsonProperty("orderedSrv")
     private String orderedSrv;
-
+    @JsonProperty("schedulerCode")
+    private String schedulerCode;
     // Date
     @JsonProperty("apmtDate")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -43,4 +44,8 @@ public class AddSchedulerReq {
 
     @JsonProperty("note")
     private String note;
+
+    @JsonProperty("status")
+    private String status;
+
 }

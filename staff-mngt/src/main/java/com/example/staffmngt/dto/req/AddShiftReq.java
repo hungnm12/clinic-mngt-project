@@ -29,4 +29,10 @@ public class AddShiftReq {
 
     @JsonProperty("booked_time")
     private ZonedDateTime bookedTime;
+    @JsonProperty("note")
+    private String note;
+    @JsonProperty("status")
+    private String status;
+    @JsonProperty("schedulerCode")
+    private String schedulerCode;
 }

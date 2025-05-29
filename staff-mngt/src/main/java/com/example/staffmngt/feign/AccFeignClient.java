@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface AccFeignClient {
     @GetMapping("/auth/validate")
     ResponseEntity<Boolean> validateToken(
-            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader("Auth") String authHeader,
             @RequestHeader("X-Tenant-ID") String tenantId);
 }

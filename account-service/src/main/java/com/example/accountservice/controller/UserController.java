@@ -66,12 +66,12 @@ public class UserController {
 
     @GetMapping("/validate")
     public ResponseEntity<Boolean> validateToken(
-            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader("Auth") String authHeader,
             @RequestHeader("X-Tenant-ID") String tenantId) {
-
+        System.out.println("authHeader = " + authHeader);
         TenantContext.setTenant(tenantId);
-        String token = authHeader.replace("Bearer ", "");
-        boolean isValid = jwtService.validateToken(token);
+//        String token = authHeader.replace("Bearer ", "");
+        boolean isValid = jwtService.validateToken(authHeader);
         return ResponseEntity.ok(isValid);
     }
 

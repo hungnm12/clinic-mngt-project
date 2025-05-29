@@ -30,8 +30,13 @@ public class ShiftScheduleEntity {
     @Column(name = "booked_patient")
     private String bookedPatient;
 
-
+    @Column(name ="schedulerCode")
+    private String schedulerCode;
     @Column(name = "booked_time")
     private ZonedDateTime bookedTime;
+    @Column(name = "status")
+    private String status;
+    @Column(name = "note")
+    private String note;
 
 }

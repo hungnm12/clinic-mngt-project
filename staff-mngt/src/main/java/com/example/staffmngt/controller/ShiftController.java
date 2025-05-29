@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Key;
 import java.util.List;
 import java.util.function.Function;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/shift")
 public class ShiftController {
@@ -41,10 +41,10 @@ public class ShiftController {
     private ShiftRepository shiftRepository;
 
     @DeleteMapping("/delete")
-    GeneralResponse deleteStaff(@RequestParam String shiftCode, @RequestHeader("X-Tenant-ID") String tenantId) {
+    GeneralResponse deleteStaff(@RequestParam String schedulerCode, @RequestHeader("X-Tenant-ID") String tenantId) {
         TenantContext.setTenant(tenantId);
 
-        return shiftScheduleService.deleteShift(shiftCode);
+        return shiftScheduleService.deleteShift(schedulerCode);
     }
 
     @PostMapping("/update")
@@ -63,7 +63,7 @@ public class ShiftController {
 
 
     @GetMapping("/all")
-    GeneralResponse getAllStaff(@RequestHeader("X-Tenant-ID") String tenantId, @RequestHeader("Authorization") String authHeader) {
+    GeneralResponse getAllStaff(@RequestHeader("X-Tenant-ID") String tenantId, @RequestHeader("Auth") String authHeader) {
         ResponseEntity<Boolean> re = accFeignClient.validateToken(authHeader, tenantId);
         if (!re.getStatusCode().is2xxSuccessful()) {
             return null;
@@ -75,7 +75,7 @@ public class ShiftController {
             return null;
         }
 
-        return shiftScheduleService.getAllShifts(st.getStaffCode());
+        return shiftScheduleService.getAllShifts(st.getId());
 
     }
 

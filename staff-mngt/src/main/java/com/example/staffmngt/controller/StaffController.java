@@ -109,7 +109,7 @@ public class StaffController {
     }
 
     @GetMapping("/getDrName")
-    String getDrName(@RequestHeader("X-Tenant-ID") String tenantId, @RequestHeader("Authorization") String authHeader) {
+    String getDrName(@RequestHeader("X-Tenant-ID") String tenantId, @RequestHeader("Auth") String authHeader) {
 
         ResponseEntity<Boolean> re = accFeignClient.validateToken(authHeader, tenantId);
         if (!re.getStatusCode().is2xxSuccessful()) {
