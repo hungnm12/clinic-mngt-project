@@ -35,18 +35,28 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken","auth/validate").permitAll()
-                        .requestMatchers("/auth/user/**").hasAuthority(String.valueOf(RoleEnum.USER_STAFF))
-                        .requestMatchers("/auth/user/**").hasAuthority(String.valueOf(RoleEnum.USER_ADMIN))
-                        .requestMatchers("/auth/user/**").hasAuthority(String.valueOf(RoleEnum.USER_PATIETNT))
-                        .requestMatchers("/auth/admin/**").hasAuthority(String.valueOf(RoleEnum.ADMIN))
-                        .anyRequest().authenticated())
+                        .requestMatchers(
+                                "/auth/welcome",
+                                "/auth/addNewUser",
+                                "/auth/generateToken",
+                                "/auth/validate" // fixed missing slash
+                        ).permitAll()
+                        .requestMatchers("/auth/user/**")
+                        .hasAnyAuthority(
+                                String.valueOf(RoleEnum.USER_STAFF),
+                                String.valueOf(RoleEnum.USER_ADMIN),
+                                String.valueOf(RoleEnum.USER_PATIETNT) // check typo "PATIETNT"
+                        )
+                        .requestMatchers("/auth/admin/**")
+                        .hasAuthority(String.valueOf(RoleEnum.ADMIN))
+                        .anyRequest().authenticated()
+                )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).build();
-
-
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

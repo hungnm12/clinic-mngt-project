@@ -51,6 +51,7 @@ public class UserController {
     @PostMapping("/generateToken")
     public TokenDto authenticateAndGetToken(@RequestBody AuthRequest authRequest, @RequestHeader("X-Tenant-ID") String tenantId) {
         TenantContext.setTenant(tenantId);
+        System.out.println("authRequest = " + authRequest);
         Optional<UserInfo> uio = userInfoRepository.findByEmail(authRequest.getUsername());
         String role = uio.map(UserInfo::getRoles).orElse(null);
         Authentication authentication = authenticationManager.authenticate(

@@ -1,7 +1,8 @@
-package com.example.staffmngt.configuration;
+package com.example.accountservice.config;
 
-import com.example.staffmngt.dto.MultiTenantsEntity;
-import com.example.staffmngt.feign.TenantFeignClient;
+
+import com.example.accountservice.dto.MultiTenantsEntity;
+import com.example.accountservice.feign.TenantFeignClient;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -28,16 +29,16 @@ public class MultiTenantDataSource extends AbstractRoutingDataSource {
     @Autowired
     private TenantFeignClient tenantFeignClient;
 
-    @Value("${spring.datasource.url}")
+    @Value("${multitenancy.default.url}")
     private String defaultUrl;
 
-    @Value("${spring.datasource.username}")
+    @Value("${multitenancy.default.username}")
     private String defaultUsername;
 
-    @Value("${spring.datasource.password}")
+    @Value("${multitenancy.default.password}")
     private String defaultPassword;
 
-    @Value("${spring.datasource.driver-class-name}")
+    @Value("${multitenancy.default.driver-class-name}")
     private String defaultDriver;
 
     @PostConstruct
@@ -62,7 +63,6 @@ public class MultiTenantDataSource extends AbstractRoutingDataSource {
 
 
     public void addTenantDataSource(String tenantId) {
-        log.info("start with tenantId: {}", tenantId);
         if (!dataSources.containsKey(tenantId)) {
             MultiTenantsEntity tenant = tenantFeignClient.getTenant(tenantId);
             // 🔹 Debugging: Log the retrieved tenant details
@@ -112,15 +112,15 @@ public class MultiTenantDataSource extends AbstractRoutingDataSource {
     private void initializeSchema(DataSource dataSource) {
         String createTableSQL = """
                     CREATE TABLE IF NOT EXISTS user_info (
-                        id BIGINT PRIMARY KEY AUTO_INCREMENT, 
+                        id INT PRIMARY KEY AUTO_INCREMENT, 
                         email VARCHAR(255),
                         name VARCHAR(255),
                         password VARCHAR(255),
                         roles VARCHAR(255),
-                        status VARCHAR(255),
+                        status VARCHAR(255) ,
                         tenant-id VARCHAR(255),
                         type VARCHAR(255),
-                        staff_code VARCHAR(255) UNIQUE
+                         staff-code VARCHAR(255) UNIQUE,
                     )
                 """;
 
@@ -133,4 +133,3 @@ public class MultiTenantDataSource extends AbstractRoutingDataSource {
     }
 
 }
-
