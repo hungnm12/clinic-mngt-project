@@ -14,4 +14,6 @@ public class AuthRequest {
     private String username;
     @JsonProperty("password")
     private String password;
+    @JsonProperty("tenantId")
+    private String tenantId;
 }
