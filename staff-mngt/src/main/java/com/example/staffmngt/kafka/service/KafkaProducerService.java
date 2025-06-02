@@ -55,4 +55,20 @@ public class KafkaProducerService {
 
     }
 
+    public void sendDeniedAppointment(String msg) throws ExecutionException, InterruptedException, TimeoutException {
+        log.info("[sendNoSqlToSqlCredentials] send credential request {}", msg);
+
+
+        sendMsgDefault(configValue.getSendDenyMailTopic(), msg, "[sendAddAccReqToAccSrv]");
+
+    }
+
+    public void sendReport(String msg) throws ExecutionException, InterruptedException, TimeoutException {
+        log.info("[sendNoSqlToSqlCredentials] send credential request {}", msg);
+
+
+        sendMsgDefault(configValue.getSendReport(), msg, "[sendAddAccReqToAccSrv]");
+
+    }
+
 }

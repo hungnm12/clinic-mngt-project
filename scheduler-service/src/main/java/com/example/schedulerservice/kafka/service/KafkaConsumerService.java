@@ -1,7 +1,8 @@
 package com.example.schedulerservice.kafka.service;
 
 
-
+import com.example.schedulerservice.dto.req.MailInfoFromDrReqDto;
+import com.example.schedulerservice.service.Impl.MailFromDrService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,21 +17,22 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class KafkaConsumerService {
+    @Autowired
+    private MailFromDrService mailFromDrService;
 
-//
-//    @KafkaListener(topics = "${}",
-//            groupId = "clinic-mngt-service-group",
-//            containerFactory = "kafkaListenerContainerFactory")
-//    public void receiveMessage(String event, Acknowledgment acknowledgment,
-//                               @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-//                               @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
-//                               @Header(KafkaHeaders.OFFSET) int offsets) throws JsonProcessingException {
-//
-//        log.info("[subscribeEventMigrationStatus] [partition: {}, offset: {} | topic: {}] Received message: {}",
-//                partition, offsets, topic, event);
-//
-//        acknowledgment.acknowledge();
-//    }
+    @KafkaListener(topics = "${kafka.pub.topic.send-deny-mail}", groupId = "clinic-mngt-service-group",
+            containerFactory = "kafkaListenerContainerFactory")
+    public void fetchSchedulerMsg(String event, Acknowledgment acknowledgment,
+                                  @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                                  @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
+                                  @Header(KafkaHeaders.OFFSET) int offsets) throws JsonProcessingException {
+        log.info("evernt {}", event);
+        ObjectMapper objectMapper = new ObjectMapper();
+        MailInfoFromDrReqDto addSchedulerReq = objectMapper.readValue(event, MailInfoFromDrReqDto.class);
+        mailFromDrService.sendDenyMail(addSchedulerReq);
+        acknowledgment.acknowledge();
+
+    }
 }
 
 

@@ -6,7 +6,7 @@
 </head>
 <body style="font-family: Arial, sans-serif;">
 <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px;">
-    <h2 style="color: #d9534f; text-align: center;">Thông báo từ phòng khám</h2>
+    <h2 style="color: #d9534f; text-align: center;">Thông báo từ phòng khám <span th:text="${clinicName}"></span></h2>
     <p>Chào <span th:text="${patientName}"></span>,</p>
     <p>Chúng tôi rất tiếc phải thông báo rằng bác sĩ <span th:text="${doctorName}"></span> hiện đang bận và không thể
         tiếp nhận cuộc hẹn của bạn vào <span th:text="${appointmentDate}"></span>.</p>

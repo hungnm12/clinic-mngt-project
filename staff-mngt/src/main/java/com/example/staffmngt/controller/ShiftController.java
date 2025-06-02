@@ -2,17 +2,19 @@ package com.example.staffmngt.controller;
 
 
 import com.example.staffmngt.configuration.TenantContext;
-import com.example.staffmngt.dto.req.AddShiftReq;
-import com.example.staffmngt.dto.req.ListStaffSearchReq;
-import com.example.staffmngt.dto.req.StaffReqDto;
-import com.example.staffmngt.dto.req.UpdReqDto;
+import com.example.staffmngt.constant.ShiftStatusConstant;
+import com.example.staffmngt.dto.MultiTenantsEntity;
+import com.example.staffmngt.dto.req.*;
 import com.example.staffmngt.dto.res.GeneralResponse;
 
 import com.example.staffmngt.entity.StaffEntity;
 import com.example.staffmngt.feign.AccFeignClient;
+import com.example.staffmngt.feign.TenantFeignClient;
+import com.example.staffmngt.kafka.service.KafkaProducerService;
 import com.example.staffmngt.repository.ShiftRepository;
 import com.example.staffmngt.repository.StaffEntityRepository;
 import com.example.staffmngt.service.ShiftScheduleService;
+import com.example.staffmngt.utils.JsonUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -21,9 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.tree.TreeNode;
 import java.security.Key;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/shift")
@@ -39,6 +45,11 @@ public class ShiftController {
     private StaffEntityRepository staffEntityRepository;
     @Autowired
     private ShiftRepository shiftRepository;
+
+    @Autowired
+    private TenantFeignClient tenantFeignClient;
+    @Autowired
+    private KafkaProducerService kafkaProducerService;
 
     @DeleteMapping("/delete")
     GeneralResponse deleteStaff(@RequestParam String schedulerCode, @RequestHeader("X-Tenant-ID") String tenantId) {
@@ -57,6 +68,28 @@ public class ShiftController {
     GeneralResponse addStaff(@RequestBody AddShiftReq shiftSchedule, @RequestHeader("X-Tenant-ID") String tenantId) {
         System.out.println("Received tenant ID: " + tenantId);
         TenantContext.setTenant(tenantId);
+
+        MultiTenantsEntity m = tenantFeignClient.getTenant(tenantId);
+        String clinicName = m.getClinicName();
+        String clinicPhone = m.getPhone();
+        if (shiftSchedule.getStatus().equals(ShiftStatusConstant.SHIFT_DENIED)) {
+            MailInfoFromDrReqDto mailInfoReqDto = new MailInfoFromDrReqDto();
+            mailInfoReqDto.setDrName(shiftSchedule.getDrName());
+            mailInfoReqDto.setSubject("Appointment Reject");
+            mailInfoReqDto.setAppointmentDate(shiftSchedule.getBookedTime().toString());
+            mailInfoReqDto.setClinicPhone(clinicPhone);
+            mailInfoReqDto.setEmailReceiver(shiftSchedule.getBookedPatient());
+            mailInfoReqDto.setClinicName(clinicName);
+
+            String msg = JsonUtils.marshalJsonAsPrettyString(mailInfoReqDto);
+            try {
+                kafkaProducerService.sendDeniedAppointment(msg);
+            } catch (ExecutionException | InterruptedException | TimeoutException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
 
         return shiftScheduleService.createShift(shiftSchedule);
     }
