@@ -25,7 +25,8 @@ public interface ShiftRepository extends JpaRepository<ShiftScheduleEntity, Long
             "l.bookedTime, " +
             "l.bookedPatient," +
             "l.note," +
-            "l.status" +
+            "l.status," +
+            "l.schedulerCode" +
             ") " +
             "from ShiftScheduleEntity l " +
             "where l.staff.id = :staffId")

@@ -7,6 +7,7 @@ import com.example.staffmngt.dto.req.AddServiceReq;
 import com.example.staffmngt.dto.req.UpdReqDto;
 import com.example.staffmngt.dto.res.GeneralResponse;
 import com.example.staffmngt.service.ServiceClinicService;
+import org.apache.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -42,6 +43,10 @@ public class ServiceController {
 
     @PostMapping("/list")
     GeneralResponse getListService(@RequestBody AddServiceReq addServiceReq, @RequestHeader("X-Tenant-ID") String tenantId) {
+        if (tenantId == null || tenantId.isEmpty()) {
+            return new GeneralResponse(HttpStatus.SC_BAD_REQUEST, "", "", null);
+        }
+
         TenantContext.setTenant(tenantId);
         return serviceClinicService.getListServices(addServiceReq);
     }

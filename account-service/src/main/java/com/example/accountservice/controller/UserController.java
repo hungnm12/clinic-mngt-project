@@ -53,12 +53,15 @@ public class UserController {
         TenantContext.setTenant(authRequest.getTenantId());
         System.out.println("authRequest = " + authRequest);
         Optional<UserInfo> uio = userInfoRepository.findByEmail(authRequest.getUsername());
+        if (userInfoRepository.findByEmailAndTenantId(authRequest.getUsername(), authRequest.getTenantId()).isEmpty()) {
+            return null;
+        }
         String role = uio.map(UserInfo::getRoles).orElse(null);
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
         );
         if (authentication.isAuthenticated()) {
-            return new TokenDto(jwtService.generateToken(authRequest.getUsername()), role);
+            return new TokenDto(jwtService.generateToken(authRequest.getUsername()), role, authRequest.getTenantId());
 
         } else {
             throw new UsernameNotFoundException("Invalid user request!");
@@ -71,6 +74,7 @@ public class UserController {
             @RequestHeader("X-Tenant-ID") String tenantId) {
         System.out.println("authHeader = " + authHeader);
         TenantContext.setTenant(tenantId);
+
 //        String token = authHeader.replace("Bearer ", "");
         boolean isValid = jwtService.validateToken(authHeader);
         return ResponseEntity.ok(isValid);
@@ -80,10 +84,12 @@ public class UserController {
     private class TokenDto {
         private String token;
         private String role;
+        private String tenantId;
 
-        public TokenDto(String token, String role) {
+        public TokenDto(String token, String role, String tenantId) {
             this.token = token;
             this.role = role;
+            this.tenantId = tenantId;
         }
 
         public String getToken() {
@@ -101,6 +107,13 @@ public class UserController {
             this.role = role;
         }
 
+        public String getTenantId() {
+            return tenantId;
+        }
+
+        public void setTenantId(String tenantId) {
+            this.tenantId = tenantId;
+        }
 
         public TokenDto() {
         }

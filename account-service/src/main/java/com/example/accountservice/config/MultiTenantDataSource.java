@@ -58,9 +58,23 @@ public class MultiTenantDataSource extends AbstractRoutingDataSource {
     protected Object determineCurrentLookupKey() {
         String tenantId = TenantContext.getTenant();
         log.info("🌍 Current Tenant: {}", tenantId);
-        return (tenantId != null) ? tenantId : "default";
-    }
 
+        if (tenantId != null && !tenantId.equals("default")) {
+            // Kiểm tra và tạo datasource nếu chưa tồn tại
+            if (!dataSources.containsKey(tenantId)) {
+                log.info("🔄 Creating new datasource for tenant: {}", tenantId);
+                try {
+                    addTenantDataSource(tenantId);
+                } catch (Exception e) {
+                    log.error("❌ Failed to create datasource for tenant {}: {}", tenantId, e.getMessage());
+                    return "default"; // Fallback to default if creation fails
+                }
+            }
+            return tenantId;
+        }
+
+        return "default";
+    }
 
     public void addTenantDataSource(String tenantId) {
         if (!dataSources.containsKey(tenantId)) {
