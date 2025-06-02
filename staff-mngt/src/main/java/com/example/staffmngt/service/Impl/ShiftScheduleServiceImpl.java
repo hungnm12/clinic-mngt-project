@@ -1,8 +1,11 @@
 package com.example.staffmngt.service.Impl;
 
 
+import com.example.accountservice.kafka.service.KafkaProducerService;
+import com.example.staffmngt.constant.ShiftStatusConstant;
 import com.example.staffmngt.dto.req.AddSchedulerReq;
 import com.example.staffmngt.dto.req.AddShiftReq;
+import com.example.staffmngt.dto.req.MailInfoFromDrReqDto;
 import com.example.staffmngt.dto.res.BookedPatientDto;
 import com.example.staffmngt.dto.res.ScheduleListResDto;
 import com.example.staffmngt.entity.ShiftScheduleEntity;
@@ -11,7 +14,6 @@ import com.example.staffmngt.repository.ShiftRepository;
 import com.example.staffmngt.repository.StaffEntityRepository;
 import com.example.staffmngt.service.ShiftScheduleService;
 import com.example.staffmngt.utils.JsonUtils;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,8 @@ public class ShiftScheduleServiceImpl implements ShiftScheduleService {
 
     @Autowired
     private StaffEntityRepository staffEntityRepository;
+
+
 
 
     @Override
@@ -86,6 +90,10 @@ public class ShiftScheduleServiceImpl implements ShiftScheduleService {
         if (existingShiftSchedule == null) {
             return new GeneralResponse(HttpStatus.SC_BAD_REQUEST, "", "shift not found", null);
         }
+
+
+
+        existingShiftSchedule.setStatus(shiftSchedule.getStatus());
 
         existingShiftSchedule.setBookedTime(shiftSchedule.getBookedTime());
 

@@ -29,5 +29,19 @@ public class ThymeLeafServiceImpl implements ThymeLeafService {
         return templateEngine.process("cf-mail", context);
     }
 
+    @Override
+    public String buildDenyMail(Map<String, Object> map) {
+        Context context = new Context();
+        context.setVariables(map);
+        return templateEngine.process("dr-busy", context);
+    }
+
+    @Override
+    public String buildReportMail(Map<String, Object> map) {
+        Context context = new Context();
+        context.setVariables(map);
+        return templateEngine.process("report", context);
+    }
+
 
 }

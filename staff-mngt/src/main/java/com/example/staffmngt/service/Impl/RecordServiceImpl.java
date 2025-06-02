@@ -2,6 +2,7 @@ package com.example.staffmngt.service.Impl;
 
 import com.example.staffmngt.dto.req.AddRecordReq;
 import com.example.staffmngt.dto.req.SearchRecReq;
+import com.example.staffmngt.dto.req.SendReportMailReq;
 import com.example.staffmngt.dto.res.GeneralResponse;
 import com.example.staffmngt.dto.res.ListContentPageDto;
 import com.example.staffmngt.dto.res.RecordResDto;
@@ -9,10 +10,12 @@ import com.example.staffmngt.dto.res.StaffResDto;
 import com.example.staffmngt.entity.DepartmentEntity;
 import com.example.staffmngt.entity.RecordEntity;
 import com.example.staffmngt.entity.StaffEntity;
+import com.example.staffmngt.kafka.service.KafkaProducerService;
 import com.example.staffmngt.repository.DepartmentRepository;
 import com.example.staffmngt.repository.RecordRepository;
 import com.example.staffmngt.repository.StaffEntityRepository;
 import com.example.staffmngt.service.RecordService;
+import com.example.staffmngt.utils.JsonUtils;
 import com.example.staffmngt.utils.StringUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,17 +24,22 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
 @Service
 public class RecordServiceImpl implements RecordService {
 
     private final RecordRepository recordRepository;
     private final StaffEntityRepository staffEntityRepository;
     private final DepartmentRepository departmentRepository;
+    private final KafkaProducerService kafkaProducerService;
 
-    public RecordServiceImpl(RecordRepository recordRepository, StaffEntityRepository staffEntityRepository, DepartmentRepository departmentRepository) {
+    public RecordServiceImpl(RecordRepository recordRepository, StaffEntityRepository staffEntityRepository, DepartmentRepository departmentRepository, KafkaProducerService kafkaProducerService) {
         this.recordRepository = recordRepository;
         this.staffEntityRepository = staffEntityRepository;
         this.departmentRepository = departmentRepository;
+        this.kafkaProducerService = kafkaProducerService;
     }
 
     @Override
@@ -64,6 +72,28 @@ public class RecordServiceImpl implements RecordService {
         recordEntity.setPatientName(addRecordReq.getPatientName());
         recordRepository.save(recordEntity);
 
+
+        SendReportMailReq s = new SendReportMailReq();
+        s.setAssign(addRecordReq.getAssign());
+        s.setDepartment(dpm.getName());
+        s.setAssumption(addRecordReq.getAssumption());
+        s.setPatientName(addRecordReq.getPatientName());
+        s.setStaffName(addRecordReq.getStaffName());
+        s.setNote(addRecordReq.getNote());
+        s.setDiagnose(addRecordReq.getDiagnose());
+        s.setPatientEmail(addRecordReq.getPatientEmail());
+        s.setServiceType(addRecordReq.getServiceType());
+        s.setSymptom(addRecordReq.getSymptom());
+        s.setPatientDob(addRecordReq.getPatientDob());
+        s.setPatientPhone(addRecordReq.getPatientPhone());
+        s.setSubject("");
+        String m = JsonUtils.marshalJsonAsPrettyString(s);
+
+        try {
+            kafkaProducerService.sendReport(m);
+        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            e.printStackTrace();
+        }
 
         return new GeneralResponse(HttpStatus.CREATED.value(), "", "", recordEntity);
     }

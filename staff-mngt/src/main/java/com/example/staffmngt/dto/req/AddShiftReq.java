@@ -18,6 +18,9 @@ import java.util.Date;
 public class AddShiftReq {
 
 
+    @JsonProperty("drName")
+    String drName;
+
     @JsonProperty("shift_code")
     private String shiftCode;
 
