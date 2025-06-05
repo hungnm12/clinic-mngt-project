@@ -2,6 +2,7 @@ package com.example.schedulerservice.kafka.service;
 
 
 import com.example.schedulerservice.dto.req.MailInfoFromDrReqDto;
+import com.example.schedulerservice.dto.req.SendReportMailReq;
 import com.example.schedulerservice.service.Impl.MailFromDrService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,6 +34,22 @@ public class KafkaConsumerService {
         acknowledgment.acknowledge();
 
     }
+
+    @KafkaListener(topics = "${kafka.pub.topic.send-report-med}", groupId = "clinic-mngt-service-group",
+            containerFactory = "kafkaListenerContainerFactory")
+    public void fetchMsg(String event, Acknowledgment acknowledgment,
+                         @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                         @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
+                         @Header(KafkaHeaders.OFFSET) int offsets) throws JsonProcessingException {
+        log.info("evernt {}", event);
+        ObjectMapper objectMapper = new ObjectMapper();
+        SendReportMailReq addSchedulerReq = objectMapper.readValue(event, SendReportMailReq.class);
+        mailFromDrService.sendReportMail(addSchedulerReq);
+        acknowledgment.acknowledge();
+
+    }
+
+
 }
 
 

@@ -2,138 +2,127 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Medical Report</title>
+    <title>Phiếu Khám Bệnh</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 40px;
+            background-color: #f4f7f9;
             color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .header h2 {
             margin: 0;
-            font-size: 28px;
-            text-transform: uppercase;
+            font-size: 24px;
+            color: #2c3e50;
         }
 
-        .form-grid {
+        .info-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px 40px;
-            margin-bottom: 25px;
-        }
-
-        .form-section {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
             margin-bottom: 20px;
         }
 
-        label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .value {
-            padding: 6px 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-        }
-
-        .textarea {
-            width: 100%;
-            height: 60px;
-            resize: none;
-            padding: 8px 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-            font-family: inherit;
-        }
-
-        .signature {
-            text-align: right;
-            margin-top: 60px;
-            font-style: italic;
+        .info-item {
+            background: #eef2f5;
+            padding: 10px;
+            border-radius: 5px;
             font-size: 16px;
+        }
+
+        .section {
+            margin-top: 20px;
         }
 
         .section-title {
             font-size: 18px;
             font-weight: bold;
-            margin-top: 30px;
+            color: #2c3e50;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 5px;
             margin-bottom: 10px;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 4px;
+        }
+
+        .textarea {
+            width: 100%;
+            height: 80px;
+            border: none;
+            background: #eef2f5;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: inherit;
+            resize: none;
+        }
+
+        .signature {
+            text-align: right;
+            margin-top: 40px;
+            font-size: 16px;
+            font-style: italic;
         }
 
     </style>
 </head>
 <body>
-<div class="header">
-    <h2>Báo cáo khám bệnh</h2>
-    <p th:text="'Ngày: ' + ${#dates.format(#dates.createNow(), 'dd/MM/yyyy HH:mm')}"></p>
-</div>
-
-<div class="form-grid">
-    <div>
-        <label>Họ tên bệnh nhân:</label>
-        <div class="value" th:text="${patientName}"></div>
+<div class="container">
+    <div class="header">
+        <h2>Phiếu Khám Bệnh</h2>
+        <p th:text="'Ngày: ' + ${#dates.format(#dates.createNow(), 'dd/MM/yyyy HH:mm')}"></p>
     </div>
-    <div>
-        <label>Số điện thoại:</label>
-        <div class="value" th:text="${patientPhone}"></div>
+
+    <div class="info-grid">
+        <div class="info-item" th:text="'Họ tên: ' + ${patientName}"></div>
+        <div class="info-item" th:text="'Số điện thoại: ' + ${patientPhone}"></div>
+        <div class="info-item" th:text="'Ngày sinh: ' + ${patientDob}"></div>
+        <div class="info-item" th:text="'Email: ' + ${patientEmail}"></div>
+        <div class="info-item" th:text="'Bác sĩ: ' + ${staffName}"></div>
+        <div class="info-item" th:text="'Dịch vụ khám: ' + ${serviceType}"></div>
     </div>
-    <div>
-        <label>Ngày sinh:</label>
-        <div class="value" th:text="${patientDob}"></div>
+
+    <div class="section">
+        <div class="section-title">Chuẩn đoán</div>
+        <textarea class="textarea" readonly th:text="${diagnose}"></textarea>
     </div>
-    <div>
-        <label>Email:</label>
-        <div class="value" th:text="${patientEmail}"></div>
+
+    <div class="section">
+        <div class="section-title">Triệu chứng</div>
+        <textarea class="textarea" readonly th:text="${symptom}"></textarea>
     </div>
-    <div>
-        <label>Bác sĩ phụ trách:</label>
-        <div class="value" th:text="${staffName}"></div>
+
+    <div class="section">
+        <div class="section-title">Kết luận</div>
+        <textarea class="textarea" readonly th:text="${assumption}"></textarea>
     </div>
-    <div>
-        <label>Dịch vụ khám:</label>
-        <div class="value" th:text="${serviceType}"></div>
+
+    <div class="section">
+        <div class="section-title">Chỉ định</div>
+        <textarea class="textarea" readonly th:text="${assign}"></textarea>
     </div>
-</div>
 
-<div class="form-section">
-    <div class="section-title">Chuẩn đoán</div>
-    <textarea class="textarea" readonly th:text="${diagnose}"></textarea>
-</div>
+    <div class="section">
+        <div class="section-title">Ghi chú</div>
+        <textarea class="textarea" readonly th:text="${note}"></textarea>
+    </div>
 
-<div class="form-section">
-    <div class="section-title">Triệu chứng</div>
-    <textarea class="textarea" readonly th:text="${symptom}"></textarea>
-</div>
-
-<div class="form-section">
-    <div class="section-title">Kết luận</div>
-    <textarea class="textarea" readonly th:text="${assumption}"></textarea>
-</div>
-
-<div class="form-section">
-    <div class="section-title">Chỉ định</div>
-    <textarea class="textarea" readonly th:text="${assign}"></textarea>
-</div>
-
-<div class="form-section">
-    <div class="section-title">Ghi chú</div>
-    <textarea class="textarea" readonly th:text="${note}"></textarea>
-</div>
-
-<div class="signature">
-    Chữ ký bác sĩ
+    <div class="signature">
+        Chữ ký bác sĩ
+        <span th:text="${staffName}"></span>
+    </div>
 </div>
 </body>
 </html>
