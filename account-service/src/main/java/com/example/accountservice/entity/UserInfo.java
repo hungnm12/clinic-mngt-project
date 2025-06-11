@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "user_info")
 public class UserInfo {
 
     @Id
@@ -27,7 +28,7 @@ public class UserInfo {
     private String type;
     @Column(name = "status")
     private String status;
-    @Column(name = "tenant-id")
+    @Column(name = "tenant_id")
     private String tenantId;
     @Column(name = "staff_code")
     private String staffCode;

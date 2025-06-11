@@ -126,16 +126,17 @@ public class MultiTenantDataSource extends AbstractRoutingDataSource {
     private void initializeSchema(DataSource dataSource) {
         String createTableSQL = """
                     CREATE TABLE IF NOT EXISTS user_info (
-                        id INT PRIMARY KEY AUTO_INCREMENT, 
+                        id BIGINT PRIMARY KEY AUTO_INCREMENT, 
                         email VARCHAR(255),
                         name VARCHAR(255),
                         password VARCHAR(255),
                         roles VARCHAR(255),
-                        status VARCHAR(255) ,
-                        tenant-id VARCHAR(255),
+                        status VARCHAR(255),
+                        tenant_id VARCHAR(255),
                         type VARCHAR(255),
-                         staff-code VARCHAR(255) UNIQUE,
+                        staff_code VARCHAR(255) UNIQUE
                     )
+                    
                 """;
 
         try (Connection connection = dataSource.getConnection();

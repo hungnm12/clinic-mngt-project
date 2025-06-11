@@ -35,12 +35,12 @@ public class StaffHistoryEntity {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "staffCode")
+    private String staffCode;
     @ManyToOne
     @JoinColumn(name = "department_id")
     private DepartmentEntity department;
 
-    @Column(name = "staffCode")
-    private String staffCode;
 
     @Column(name = "password")
     private String password;

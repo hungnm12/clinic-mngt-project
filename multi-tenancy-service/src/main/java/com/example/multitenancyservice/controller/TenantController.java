@@ -7,7 +7,9 @@ import com.example.multitenancyservice.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -25,7 +27,6 @@ public class TenantController {
     public ResponseEntity<MultiTenantsEntity> getTenant(@PathVariable String tenantId) {
         return ResponseEntity.ok(tenantService.getTenantById(tenantId));
     }
-
     @PostMapping
     public ResponseEntity<MultiTenantsEntity> createTenant(@RequestBody AddTenantReq tenant) {
         return ResponseEntity.ok(tenantService.saveTenant(tenant));

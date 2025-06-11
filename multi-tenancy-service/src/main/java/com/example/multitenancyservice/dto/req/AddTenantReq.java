@@ -32,4 +32,5 @@ public class AddTenantReq {
     private String email;
     @JsonProperty("website")
     private String website;
+
 }

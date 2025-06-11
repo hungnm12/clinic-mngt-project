@@ -39,6 +39,116 @@ public class MultiTenantDataSource extends AbstractRoutingDataSource {
 
     @Value("${spring.datasource.driver-class-name}")
     private String defaultDriver;
+    // Department Table
+    public static final String CREATE_DEPARTMENTS_TABLE = """
+            CREATE TABLE departments (
+                department_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(255) NOT NULL UNIQUE
+            )
+            """;
+
+    // Staff Table
+    public static final String CREATE_STAFF_TABLE = """
+            CREATE TABLE staff (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                lastName VARCHAR(255),
+                firstName VARCHAR(255),
+                age INT,
+                role VARCHAR(255),
+                email VARCHAR(255),
+                phone VARCHAR(255),
+                specialty VARCHAR(255),
+                department_id BIGINT,
+                staffCode VARCHAR(255),
+                password VARCHAR(255),
+                status VARCHAR(255),
+                FOREIGN KEY (department_id) REFERENCES departments(department_id)
+            )
+            """;
+
+    // Staff History Table
+    public static final String CREATE_STAFF_HISTORY_TABLE = """
+            CREATE TABLE staff_history (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                last_name VARCHAR(255),
+                first_name VARCHAR(255),
+                age INT,
+                role VARCHAR(255),
+                phone VARCHAR(255),
+                specialty VARCHAR(255),
+                email VARCHAR(255),
+                department_id BIGINT,
+                staffCode VARCHAR(255),
+                password VARCHAR(255),
+                status VARCHAR(255),
+                FOREIGN KEY (department_id) REFERENCES departments(department_id)
+            )
+            """;
+
+    // Services Table
+    public static final String CREATE_SERVICES_TABLE = """
+            CREATE TABLE services (
+                service_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                service_name VARCHAR(255),
+                service_code VARCHAR(255),
+                note TEXT,
+                price DOUBLE,
+                department_id BIGINT,
+                FOREIGN KEY (department_id) REFERENCES departments(department_id)
+            )
+            """;
+
+    // Shift Schedules Table
+    public static final String CREATE_SHIFT_SCHEDULES_TABLE = """
+            CREATE TABLE shift_schedules (
+                shift_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                shift_code VARCHAR(255),
+                staff_id BIGINT NOT NULL,
+                booked_patient VARCHAR(255),
+                schedulerCode VARCHAR(255),
+                booked_time TIMESTAMP,
+                status VARCHAR(255),
+                note TEXT,
+                FOREIGN KEY (staff_id) REFERENCES staff(id)
+            )
+            """;
+
+    // Record Table
+    public static final String CREATE_RECORD_TABLE = """
+            CREATE TABLE record (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                patientName VARCHAR(255),
+                patientPhone VARCHAR(255),
+                patientDob VARCHAR(255),
+                patientEmail VARCHAR(255),
+                serviceType VARCHAR(255),
+                diagnose TEXT,
+                assumption TEXT,
+                symptom TEXT,
+                assign VARCHAR(255),
+                note TEXT,
+                department_id BIGINT,
+                staffCode VARCHAR(255),
+                staffName VARCHAR(255),
+                FOREIGN KEY (department_id) REFERENCES departments(department_id)
+            )
+            """;
+
+    // UserInfo Table (based on ERD)
+    public static final String CREATE_USERINFO_TABLE = """
+            CREATE TABLE userinfo (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                email VARCHAR(255),
+                name VARCHAR(255),
+                password VARCHAR(255),
+                roles VARCHAR(255),
+                staffCode VARCHAR(255),
+                status VARCHAR(255),
+                tenantId VARCHAR(255),
+                type VARCHAR(255)
+            )
+            """;
+
 
     @PostConstruct
     public void init() {
@@ -118,15 +228,114 @@ public class MultiTenantDataSource extends AbstractRoutingDataSource {
                         password VARCHAR(255),
                         roles VARCHAR(255),
                         status VARCHAR(255),
-                        tenant-id VARCHAR(255),
+                        tenant_id VARCHAR(255),
                         type VARCHAR(255),
                         staff_code VARCHAR(255) UNIQUE
                     )
+                    
                 """;
+        String createDepartmentsTable = "CREATE TABLE departments (\n" +
+                "    department_id BIGINT,\n" +
+                "    name VARCHAR(255)\n" +
+                ");";
+
+        String createLeaveRequestTable = "CREATE TABLE leave_request (\n" +
+                "    leave_id BIGINT,\n" +
+                "    staff_id BIGINT,\n" +
+                "    startDate VARCHAR(255),\n" +
+                "    endDate VARCHAR(255),\n" +
+                "    leaveType VARCHAR(255),\n" +
+                "    status VARCHAR(255)\n" +
+                ");";
+
+        String createRecordTable = "CREATE TABLE record (\n" +
+                "    id BIGINT,\n" +
+                "    patientName VARCHAR(255),\n" +
+                "    patientPhone VARCHAR(255),\n" +
+                "    patientDob VARCHAR(255),\n" +
+                "    patientEmail VARCHAR(255),\n" +
+                "    serviceType VARCHAR(255),\n" +
+                "    diagnose VARCHAR(255),\n" +
+                "    assumption VARCHAR(255),\n" +
+                "    symptom VARCHAR(255),\n" +
+                "    assign VARCHAR(255),\n" +
+                "    note VARCHAR(255),\n" +
+                "    department_id BIGINT,\n" +
+                "    staffCode VARCHAR(255),\n" +
+                "    staffName VARCHAR(255)\n" +
+                ");";
+
+        String createSalaryTable = "CREATE TABLE salaries (\n" +
+                "    salary_id BIGINT,\n" +
+                "    staff_id BIGINT,\n" +
+                "    baseSalary DOUBLE,\n" +
+                "    bonus DOUBLE,\n" +
+                "    deductions DOUBLE,\n" +
+                "    netSalary DOUBLE\n" +
+                ");";
+
+        String createServiceTable = "CREATE TABLE services (\n" +
+                "    service_id BIGINT,\n" +
+                "    service_name VARCHAR(255),\n" +
+                "    service_code VARCHAR(255),\n" +
+                "    note VARCHAR(255),\n" +
+                "    price DOUBLE,\n" +
+                "    department_id BIGINT\n" +
+                ");";
+
+        String createShiftScheduleTable = "CREATE TABLE shiftschedule (\n" +
+                "    shift_id BIGINT,\n" +
+                "    shiftCode VARCHAR(255),\n" +
+                "    staff_id BIGINT,\n" +
+                "    bookedPatient VARCHAR(255),\n" +
+                "    schedulerCode VARCHAR(255),\n" +
+                "    bookedTime TIMESTAMP,\n" +
+                "    status VARCHAR(255),\n" +
+                "    note VARCHAR(255)\n" +
+                ");";
+
+        String createStaffTable = "CREATE TABLE staff (\n" +
+                "    id BIGINT,\n" +
+                "    lastName VARCHAR(255),\n" +
+                "    firstName VARCHAR(255),\n" +
+                "    age INT,\n" +
+                "    role VARCHAR(255),\n" +
+                "    email VARCHAR(255),\n" +
+                "    phone VARCHAR(255),\n" +
+                "    specialty VARCHAR(255),\n" +
+                "    department_id BIGINT,\n" +
+                "    staffCode VARCHAR(255),\n" +
+                "    password VARCHAR(255),\n" +
+                "    status VARCHAR(255)\n" +
+                ");";
+
+        String createStaffHistoryTable = "CREATE TABLE staffhistory (\n" +
+                "    id BIGINT,\n" +
+                "    lastName VARCHAR(255),\n" +
+                "    firstName VARCHAR(255),\n" +
+                "    age INT,\n" +
+                "    role VARCHAR(255),\n" +
+                "    phone VARCHAR(255),\n" +
+                "    specialty VARCHAR(255),\n" +
+                "    email VARCHAR(255),\n" +
+                "    department_id BIGINT,\n" +
+                "    staffCode VARCHAR(255),\n" +
+                "    password VARCHAR(255),\n" +
+                "    status VARCHAR(255)\n" +
+                ");";
+
+
 
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
             statement.executeUpdate(createTableSQL);
+            statement.executeUpdate(CREATE_DEPARTMENTS_TABLE);
+            statement.executeUpdate(CREATE_RECORD_TABLE);
+            statement.executeUpdate(CREATE_STAFF_TABLE);
+            statement.executeUpdate(CREATE_STAFF_HISTORY_TABLE);
+            statement.executeUpdate(CREATE_USERINFO_TABLE);
+            statement.executeUpdate(CREATE_SERVICES_TABLE);
+            statement.executeUpdate(CREATE_SHIFT_SCHEDULES_TABLE);
         } catch (SQLException e) {
             log.error("Error initializing schema for tenant", e);
         }

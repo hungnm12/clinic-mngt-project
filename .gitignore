@@ -1,0 +1,12 @@
+# Ignore all application.properties files
+**/application.properties
+
+# Ignore all application-*.properties files (e.g., application-dev.properties)
+**/application-*.properties
+
+# Optional: Ignore YAML versions too
+**/application.yml
+**/application-*.yml
+
+# If you use .env or secrets
+.env

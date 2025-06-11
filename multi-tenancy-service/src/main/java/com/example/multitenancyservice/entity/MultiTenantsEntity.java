@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "tenants")
@@ -41,4 +42,8 @@ public class MultiTenantsEntity {
     private String email;
     @Column(name = "website")
     private String website;
+//
+//    @Lob
+//    @Basic(fetch = FetchType.LAZY)
+//    private byte[] image;
 }

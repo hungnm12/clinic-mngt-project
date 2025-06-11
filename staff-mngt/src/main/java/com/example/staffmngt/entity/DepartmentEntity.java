@@ -14,6 +14,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
+@SqlResultSetMapping(name = "")
 public class DepartmentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +27,10 @@ public class DepartmentEntity {
 
 
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ServiceEntity> serviceLst = new ArrayList<>();
+    private List<ServiceEntity> serviceLst;
 
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<StaffEntity> staffLst = new ArrayList<>();
+    private List<StaffEntity> staffLst ;
 
 }
 
