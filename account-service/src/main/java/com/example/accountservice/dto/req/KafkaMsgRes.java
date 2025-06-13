@@ -15,4 +15,7 @@ public class KafkaMsgRes {
 
     @JsonProperty("data")
     private Object data;
+
+    @JsonProperty("tenantId")
+    private String tenantId;
 }

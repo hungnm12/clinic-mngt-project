@@ -134,7 +134,7 @@ public class MultiTenantDataSource extends AbstractRoutingDataSource {
                         status VARCHAR(255),
                         tenant_id VARCHAR(255),
                         type VARCHAR(255),
-                        staff_code VARCHAR(255) UNIQUE
+                        staffCode VARCHAR(255) UNIQUE
                     )
                     
                 """;

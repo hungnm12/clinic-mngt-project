@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface StaffService {
 
-    GeneralResponse addStaff(StaffReqDto staff);
+    GeneralResponse addStaff(StaffReqDto staff,String tenantId);
 
     GeneralResponse updateStaff(UpdReqDto staff);
 

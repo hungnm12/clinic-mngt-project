@@ -52,14 +52,13 @@ public class StaffServiceImpl implements StaffService {
 
 
     @Override
-    public GeneralResponse addStaff(StaffReqDto staff) {
+    public GeneralResponse addStaff(StaffReqDto staff,String tenantId) {
         log.info("Adding staff: {}", staff);
 
         if (staff == null) {
             return new GeneralResponse(HttpStatus.NO_CONTENT.value(), "", "Staff object is null, cannot proceed.", null);
         }
 
-        String tenantId = TenantContext.getTenant();
         if (tenantId == null || tenantId.isEmpty()) {
             log.error("[addStaff] Tenant ID is missing!");
             throw new IllegalStateException("Tenant ID is missing!");
@@ -339,15 +338,22 @@ public class StaffServiceImpl implements StaffService {
 
 
     public void processResponseStaffFromQueue(UserInfo userInfo) {
-
+            List<StaffHistoryEntity> list = staffHistoryRepository.findAll();
+            list.forEach(staffHistoryEntity -> {
+                log.info(staffHistoryEntity.getStaffCode());
+            });
         try {
 
             StaffHistoryEntity staffHistoryEntity = staffHistoryRepository.findByStaffCodeOrderByIdDesc(userInfo.getStaffCode());
+            log.info("stff {}",staffHistoryEntity.getStaffCode());
             if (staffHistoryEntity == null) {
+                log.info("staff is null");
                 return;
             }
             DepartmentEntity department = departmentRepository.findByName(staffHistoryEntity.getDepartment().getName());
             if (department == null) {
+                log.info("depm is null");
+
                 return;
             }
             //New his staff upd

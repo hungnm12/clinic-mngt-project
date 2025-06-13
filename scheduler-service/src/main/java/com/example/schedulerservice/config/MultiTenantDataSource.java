@@ -25,6 +25,111 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MultiTenantDataSource extends AbstractRoutingDataSource {
     private final Map<Object, Object> dataSources = new ConcurrentHashMap<>();
 
+    private final String CREATE_SCHEDULER_TABLE_SQL = """
+                CREATE TABLE IF NOT EXISTS scheduler (
+                    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                    schedulerCode VARCHAR(255),
+                    patientName VARCHAR(255),
+                    patientTelephone VARCHAR(255),
+                    patientEmail VARCHAR(255),
+                    drName VARCHAR(255),
+                    orderedSrv VARCHAR(255),
+                    dateApmt TIMESTAMP WITH TIME ZONE,
+                    note TEXT,
+                    status VARCHAR(255)
+                );
+            """;
+    // Record Table
+    public static final String CREATE_RECORD_TABLE = """
+            CREATE TABLE record (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                patientName VARCHAR(255),
+                patientPhone VARCHAR(255),
+                patientDob VARCHAR(255),
+                patientEmail VARCHAR(255),
+                serviceType VARCHAR(255),
+                diagnose TEXT,
+                assumption TEXT,
+                symptom TEXT,
+                assign VARCHAR(255),
+                note TEXT,
+                department_id BIGINT,
+                staffCode VARCHAR(255),
+                staffName VARCHAR(255),
+                FOREIGN KEY (department_id) REFERENCES departments(department_id)
+            )
+            """;
+    // Shift Schedules Table
+    public static final String CREATE_SHIFT_SCHEDULES_TABLE = """
+            CREATE TABLE shift_schedules (
+                shift_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                shift_code VARCHAR(255),
+                staff_id BIGINT NOT NULL,
+                booked_patient VARCHAR(255),
+                schedulerCode VARCHAR(255),
+                booked_time TIMESTAMP,
+                status VARCHAR(255),
+                note TEXT,
+                FOREIGN KEY (staff_id) REFERENCES staff(id)
+            )
+            """;
+    // Services Table
+    public static final String CREATE_SERVICES_TABLE = """
+            CREATE TABLE services (
+                service_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                service_name VARCHAR(255),
+                service_code VARCHAR(255),
+                note TEXT,
+                price DOUBLE,
+                department_id BIGINT,
+                FOREIGN KEY (department_id) REFERENCES departments(department_id)
+            )
+            """;
+
+    // Staff History Table
+    public static final String CREATE_STAFF_HISTORY_TABLE = """
+            CREATE TABLE staff_history (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                last_name VARCHAR(255),
+                first_name VARCHAR(255),
+                age INT,
+                role VARCHAR(255),
+                phone VARCHAR(255),
+                specialty VARCHAR(255),
+                email VARCHAR(255),
+                department_id BIGINT,
+                staffCode VARCHAR(255),
+                password VARCHAR(255),
+                status VARCHAR(255),
+                FOREIGN KEY (department_id) REFERENCES departments(department_id)
+            )
+            """;
+    // Staff Table
+    public static final String CREATE_STAFF_TABLE = """
+            CREATE TABLE staff (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                lastName VARCHAR(255),
+                firstName VARCHAR(255),
+                age INT,
+                role VARCHAR(255),
+                email VARCHAR(255),
+                phone VARCHAR(255),
+                specialty VARCHAR(255),
+                department_id BIGINT,
+                staffCode VARCHAR(255),
+                password VARCHAR(255),
+                status VARCHAR(255),
+                FOREIGN KEY (department_id) REFERENCES departments(department_id)
+            )
+            """;
+    public static final String CREATE_DEPARTMENTS_TABLE = """
+            CREATE TABLE IF NOT EXISTS departments (
+                department_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(255) NOT NULL UNIQUE
+            )
+            """;
+
+
     @Lazy
     @Autowired
     private TenantFeignClient tenantFeignClient;
@@ -111,22 +216,33 @@ public class MultiTenantDataSource extends AbstractRoutingDataSource {
 
     private void initializeSchema(DataSource dataSource) {
         String createTableSQL = """
-                    CREATE TABLE IF NOT EXISTS staff (
+                  CREATE TABLE IF NOT EXISTS user_info (
                         id BIGINT PRIMARY KEY AUTO_INCREMENT, 
-                        last_name VARCHAR(255),
-                        first_name VARCHAR(255),
-                        age INT,
-                        role VARCHAR(255),
-                        email VARCHAR(255) NOT NULL UNIQUE,
-                        department VARCHAR(255),
-                        staff_code VARCHAR(255) UNIQUE
+                        email VARCHAR(255),
+                        name VARCHAR(255),
+                        password VARCHAR(255),
+                        roles VARCHAR(255),
+                        status VARCHAR(255),
+                        tenant_id VARCHAR(255),
+                        type VARCHAR(255),
+                        staffCode VARCHAR(255) UNIQUE
                     )
+                    
                 """;
+
 
 
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
             statement.executeUpdate(createTableSQL);
+            statement.executeUpdate(CREATE_SCHEDULER_TABLE_SQL);
+            statement.executeUpdate(CREATE_DEPARTMENTS_TABLE);
+            statement.executeUpdate(CREATE_RECORD_TABLE);
+            statement.executeUpdate(CREATE_STAFF_TABLE);
+            statement.executeUpdate(CREATE_SERVICES_TABLE);
+            statement.executeUpdate(CREATE_SHIFT_SCHEDULES_TABLE);
+            statement.executeUpdate(CREATE_STAFF_HISTORY_TABLE);
+            ;
         } catch (SQLException e) {
             log.error("Error initializing schema for tenant", e);
         }

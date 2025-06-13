@@ -51,7 +51,7 @@ public class StaffController {
         System.out.println("Received tenant ID: " + tenantId);
         TenantContext.setTenant(tenantId);
 
-        return staffService.addStaff(staff);
+        return staffService.addStaff(staff,tenantId);
     }
 
     @PostMapping("/search")
@@ -122,7 +122,7 @@ public class StaffController {
         if (st == null) {
             return null;
         }
-        return st.getFirstName() + " " + st.getLastName();
+        return st.getLastName() + " " + st.getFirstName();
     }
 
 

@@ -1,6 +1,7 @@
 package com.example.staffmngt.kafka.service;
 
 
+import com.example.staffmngt.configuration.TenantContext;
 import com.example.staffmngt.dto.req.AddSchedulerReq;
 import com.example.staffmngt.dto.res.KafkaMsgRes;
 import com.example.staffmngt.dto.res.StaffResDto;
@@ -34,14 +35,18 @@ public class KafkaConsumerService {
     public void receiveMessage(String event, Acknowledgment acknowledgment,
                                @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                                @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
-                               @Header(KafkaHeaders.OFFSET) int offsets) throws JsonProcessingException {
+                               @Header(KafkaHeaders.OFFSET) int offsets
+    ) throws JsonProcessingException {
 
         log.info("[subscribeEventMigrationStatus] [partition: {}, offset: {} | topic: {}] Received message: {}",
                 partition, offsets, topic, event);
+
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(event);
         JsonNode dataNode = jsonNode.path("data");
-
+        JsonNode tenantNode = jsonNode.path("tenantId");
+        log.info("hehe " + tenantNode);
+        TenantContext.setTenant(objectMapper.treeToValue(tenantNode, String.class));
         System.out.println("Processing Staff Addition: " + jsonNode.get("data"));
         UserInfo userInfo = objectMapper.treeToValue(dataNode, UserInfo.class);
         // StaffResDto staffResDto = kafkaMsgRes.getData();

@@ -1,5 +1,6 @@
 package com.example.accountservice.service;
 
+import com.example.accountservice.config.TenantContext;
 import com.example.accountservice.constant.StatusConstant;
 import com.example.accountservice.dto.req.KafkaMsgRes;
 import com.example.accountservice.dto.res.GeneralResponse;
@@ -54,21 +55,25 @@ public class UserInfoService implements UserDetailsService {
     }
 
     public GeneralResponse addUser(UserInfo userInfo) {
+        System.out.println("hehehe ");
+        TenantContext.setTenant(userInfo.getTenantId());
         if (repository.findByEmail(userInfo.getEmail()).isPresent()) {
             return new GeneralResponse(HttpStatus.SC_CONFLICT, "", "Email already exists!", null);
         }
+
         userInfo.setPassword(encoder.encode(userInfo.getPassword()));
         userInfo.setStatus(StatusConstant.ACTIVE);
         KafkaMsgRes req = KafkaMsgRes
                 .builder()
+                .tenantId(userInfo.getTenantId())
                 .data(userInfo)
                 .build();
-
+        repository.save(userInfo);
         String returnMsg = ConvertUtils.marshalJsonAsPrettyString(req);
 
 
         kafkaProducerService.sendSavedAccData(returnMsg);
-        repository.save(userInfo);
+
 
         return new GeneralResponse(HttpStatus.SC_OK, "", "User Added Successfully", userInfo);
     }

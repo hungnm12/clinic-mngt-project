@@ -7,6 +7,7 @@ import com.example.accountservice.dto.res.GeneralResponse;
 import com.example.accountservice.entity.UserInfo;
 import com.example.accountservice.repository.UserInfoRepository;
 import com.example.accountservice.service.UserInfoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,8 +17,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 public class UserController {
@@ -51,9 +55,15 @@ public class UserController {
     @PostMapping("/generateToken")
     public TokenDto authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         TenantContext.setTenant(authRequest.getTenantId());
+
+        String username = authRequest.getUsername();
+        String password = authRequest.getPassword();
+
+        System.out.println("password = " + password + ", username = " + username);
         System.out.println("authRequest = " + authRequest);
         Optional<UserInfo> uio = userInfoRepository.findByEmail(authRequest.getUsername());
         if (userInfoRepository.findByEmailAndTenantId(authRequest.getUsername(), authRequest.getTenantId()).isEmpty()) {
+            log.info("tao dang o day");
             return null;
         }
         String role = uio.map(UserInfo::getRoles).orElse(null);

@@ -28,24 +28,39 @@ public class MultiTenantDataSource extends AbstractRoutingDataSource {
     @Autowired
     private TenantFeignClient tenantFeignClient;
 
-    @Value("${spring.datasource.url}")
+    @Value("${multitenancy.default.url}")
     private String defaultUrl;
 
-    @Value("${spring.datasource.username}")
+    @Value("${multitenancy.default.username}")
     private String defaultUsername;
 
-    @Value("${spring.datasource.password}")
+    @Value("${multitenancy.default.password}")
     private String defaultPassword;
 
-    @Value("${spring.datasource.driver-class-name}")
+    @Value("${multitenancy.default.driver-class-name}")
     private String defaultDriver;
     // Department Table
     public static final String CREATE_DEPARTMENTS_TABLE = """
-            CREATE TABLE departments (
+            CREATE TABLE IF NOT EXISTS departments (
                 department_id BIGINT AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(255) NOT NULL UNIQUE
             )
             """;
+
+    private final String CREATE_SCHEDULER_TABLE_SQL = """
+    CREATE TABLE scheduler (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        schedulerCode VARCHAR(255),
+        patientName VARCHAR(255),
+        patientTelephone VARCHAR(255),
+        patientEmail VARCHAR(255),
+        drName VARCHAR(255),
+        orderedSrv VARCHAR(255),
+        dateApmt TIMESTAMP WITH TIME ZONE,
+        note TEXT,
+        status VARCHAR(255)
+    );
+""";
 
     // Staff Table
     public static final String CREATE_STAFF_TABLE = """
@@ -134,20 +149,6 @@ public class MultiTenantDataSource extends AbstractRoutingDataSource {
             )
             """;
 
-    // UserInfo Table (based on ERD)
-    public static final String CREATE_USERINFO_TABLE = """
-            CREATE TABLE userinfo (
-                id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                email VARCHAR(255),
-                name VARCHAR(255),
-                password VARCHAR(255),
-                roles VARCHAR(255),
-                staffCode VARCHAR(255),
-                status VARCHAR(255),
-                tenantId VARCHAR(255),
-                type VARCHAR(255)
-            )
-            """;
 
 
     @PostConstruct
@@ -230,7 +231,7 @@ public class MultiTenantDataSource extends AbstractRoutingDataSource {
                         status VARCHAR(255),
                         tenant_id VARCHAR(255),
                         type VARCHAR(255),
-                        staff_code VARCHAR(255) UNIQUE
+                        staffCode VARCHAR(255) UNIQUE
                     )
                     
                 """;
@@ -333,7 +334,7 @@ public class MultiTenantDataSource extends AbstractRoutingDataSource {
             statement.executeUpdate(CREATE_RECORD_TABLE);
             statement.executeUpdate(CREATE_STAFF_TABLE);
             statement.executeUpdate(CREATE_STAFF_HISTORY_TABLE);
-            statement.executeUpdate(CREATE_USERINFO_TABLE);
+            statement.executeUpdate(CREATE_SCHEDULER_TABLE_SQL);
             statement.executeUpdate(CREATE_SERVICES_TABLE);
             statement.executeUpdate(CREATE_SHIFT_SCHEDULES_TABLE);
         } catch (SQLException e) {
